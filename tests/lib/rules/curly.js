@@ -1,0 +1,60 @@
+/**
+ * @fileoverview Define when should curly braces be used
+ * @author Maël Nison
+ * @copyright 2016 Maël Nison. All rights reserved.
+ * See LICENSE file in root directory for full license.
+ */
+"use strict";
+
+//------------------------------------------------------------------------------
+// Requirements
+//------------------------------------------------------------------------------
+
+var rule = require("../../../lib/rules/curly"),
+
+    RuleTester = require("eslint").RuleTester;
+
+
+//------------------------------------------------------------------------------
+// Tests
+//------------------------------------------------------------------------------
+
+var ruleTester = new RuleTester();
+
+ruleTester.run("curly", rule, {
+
+    valid: [
+
+        { code: "if (test)\n    test();\n" },
+        { code: "for (var test in test)\n    test();\n" },
+        { code: "if (test) {\n    test = {\n        test: test\n    };\n}\n" },
+        { code: "if (test)\n    if(test)\n        test();\n" },
+        { code: "function test() {\n    if (test) {\n        test();\n    }\n};\n" },
+        { code: "function test() {\n    if (test) {\n        test();\n    } else {\n        test();\n    }\n};\n" },
+        { code: "function test() {\n    if (test)\n        test();\n    else\n        test();\n    if (test) {\n        test();\n    }\n};\n" },
+        { code: "if (test)\n    test();\nelse for (;test;)\n    test();\n" },
+        { code: "if (test)\n    test();\nelse for (var test in test)\n    test();\n" },
+        { code: "if (test)\n    test();\nelse for (var test of test)\n    test();\n", parserOptions: { ecmaVersion: 6 } }
+
+    ],
+
+    invalid: [
+
+        { code: "for (var test in test) {\n    test();\n}\n",
+          errors: [{ message: "Unnecessary { after 'for-in'." }] },
+        { code: "if (test)\n    test = {\n        test: test\n    };\n",
+          errors: [{ message: "Expected { after 'if' condition." }] },
+        { code: "if (test) {\n    doSomething();\n}\n",
+          errors: [{ message: "Unnecessary { after 'if' condition." }] },
+        { code: "if (test)\n    if (test) {\n    test();\n    }\n",
+          errors: [{ message: "Unnecessary { after 'if' condition." }] },
+        { code: "function test() {\n    if (test)\n        test();\n}\n",
+          errors: [{ message: "Expected { after 'if' condition." }] },
+        { code: "function test() {\n    if (test)\n        test();\n    else\n        test();\n}\n",
+          errors: [{ message: "Expected { after 'else'." }, { message: "Expected { after 'if' condition." }] },
+        { code: "if (test) {\n    test();\n} else\n    for (var test in test)\n        test();\n",
+          errors: [{ message: "Unnecessary { after 'if' condition." }] },
+
+    ]
+
+});
