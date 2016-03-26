@@ -10,7 +10,7 @@
   "author": "Maël Nison",
   "main": "lib/index.js",
   "scripts": {
-    "test": "mocha",
+    "test": "$(npm bin)/mocha tests/**/*.js --reporter dot",
     "preversion": "npm test",
     "postversion": "git push && git push --tags"
   },
@@ -18,7 +18,8 @@
     "requireindex": "~1.1.0"
   },
   "devDependencies": {
-    "eslint": "~2.5.1"
+    "eslint": "~2.5.1",
+    "mocha": "^2.4.5"
   },
   "engines": {
     "node": ">=0.10.0"
