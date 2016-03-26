@@ -32,6 +32,8 @@ ruleTester.run("curly", rule, {
         { code: "function test() {\n    if (test) {\n        test();\n    }\n};\n" },
         { code: "function test() {\n    if (test) {\n        test();\n    } else {\n        test();\n    }\n};\n" },
         { code: "function test() {\n    if (test)\n        test();\n    else\n        test();\n    if (test) {\n        test();\n    }\n};\n" },
+        { code: "function test() {\n    if (test) {\n        test();\n    } else if (test) {\n        test();\n    }\n};\n", parserOptions: { ecmaVersion: 6 } },
+        { code: "function test() {\n    if (test) {\n        test();\n    } else if (test) {\n        test();\n    } else if (test) {\n        test();\n    }\n};\n", parserOptions: { ecmaVersion: 6 } },
         { code: "if (test)\n    test();\nelse for (;test;)\n    test();\n" },
         { code: "if (test)\n    test();\nelse for (var test in test)\n    test();\n" },
         { code: "if (test)\n    test();\nelse for (var test of test)\n    test();\n", parserOptions: { ecmaVersion: 6 } }

@@ -10,7 +10,9 @@
   "author": "Maël Nison",
   "main": "lib/index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "preversion": "npm test",
+    "postversion": "git push && git push --tags"
   },
   "dependencies": {
     "requireindex": "~1.1.0"

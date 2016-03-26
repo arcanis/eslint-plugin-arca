@@ -35,7 +35,9 @@ ruleTester.run("melted-constructs", rule, {
         { code: "if (test)\n    test();\n else try {\n    test();\n} catch (e) {\n    test();\n}\n" },
         { code: "if (test)\n    test();\n else with (test) {\n    test();\n}\n" },
 
-        { code: "if (test)\n    test();\nelse if (test)\n    test();\nelse for (var test in test)\n    test();\n" }
+        { code: "if (test)\n    test();\nelse if (test)\n    test();\nelse for (var test in test)\n    test();\n" },
+
+        { code: "if (test) {\n    if (test) {\n        test();\n    }\n} else {\n    if (test) {\n        test();\n    }\n}\n" }
 
     ],
 

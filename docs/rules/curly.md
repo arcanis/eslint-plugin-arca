@@ -48,7 +48,7 @@ var test = function () {
 
     if (test)
         test();
-    else
+    else if (test)
         test();
 
 };
@@ -109,7 +109,7 @@ let test = function () {
 
     if (test) {
         test();
-    } else {
+    } else if (test) {
         test();
     }
 
