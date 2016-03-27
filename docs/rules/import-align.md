@@ -1,4 +1,4 @@
-# require `from` keywords to be aligned (import-align)
+# Require `from` keywords to be aligned (import-align)
 
 ## Rule Details
 
@@ -26,7 +26,3 @@ import {
 ## When Not To Use It
 
 You may want to disable this rule if you don't work with Maël.
-
-## Further Reading
-
-If there are other links that describe the issue this rule addresses, please include them here in a bulleted list.

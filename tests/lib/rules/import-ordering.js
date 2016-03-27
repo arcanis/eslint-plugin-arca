@@ -1,5 +1,5 @@
 /**
- * @fileoverview Ensure that every import is sorted according to a strict ordering
+ * @fileoverview Ensure that each import in the file is correctly ordered relative to the others
  * @author Maël Nison
  * @copyright 2016 Maël Nison. All rights reserved.
  * See LICENSE file in root directory for full license.

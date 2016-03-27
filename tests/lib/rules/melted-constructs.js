@@ -1,5 +1,5 @@
 /**
- * @fileoverview Force if/for/while/do/switch/with/try constructs to be merged with the 'else' keyword if possible
+ * @fileoverview Enforce the use of melted constructs when possible
  * @author Maël Nison
  * @copyright 2016 Maël Nison. All rights reserved.
  * See LICENSE file in root directory for full license.
@@ -82,4 +82,5 @@ ruleTester.run("melted-constructs", rule, {
           errors: [{ message: "Expected 'else' construct to be melted with its 'with' followup." }] },
 
     ]
+
 });

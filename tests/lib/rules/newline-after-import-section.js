@@ -1,5 +1,5 @@
 /**
- * @fileoverview Rule to check empty newline after import section
+ * @fileoverview Require an empty newline after an import section
  * @author Maël Nison
  * @copyright 2016 Maël Nison. All rights reserved.
  * See LICENSE file in root directory for full license.
@@ -20,6 +20,7 @@ var rule = require("../../../lib/rules/newline-after-import-section"),
 //------------------------------------------------------------------------------
 
 var ruleTester = new RuleTester();
+
 ruleTester.run("newline-after-import-section", rule, {
 
     valid: [
@@ -38,4 +39,5 @@ ruleTester.run("newline-after-import-section", rule, {
           errors: [{ message: "Expected blank line after import section." }] },
 
     ]
+
 });
