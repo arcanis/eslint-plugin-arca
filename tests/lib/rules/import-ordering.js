@@ -48,7 +48,12 @@ ruleTester.run("import-ordering", rule, {
         { code: "import foo from 'common/foo';\nimport bar from 'common/bar';\n", parserOptions: { sourceType: "module" },
           errors: [{ message: "Expected 'common/bar' to be imported before 'common/foo' (lexicographic order)." }] },
         { code: "import foo from 'app/foo';\nimport bar from 'app/bar';\n", parserOptions: { sourceType: "module" },
-          errors: [{ message: "Expected 'app/bar' to be imported before 'app/foo' (lexicographic order)." }] }
+          errors: [{ message: "Expected 'app/bar' to be imported before 'app/foo' (lexicographic order)." }] },
+
+        { code: "import bar from 'bar';\nimport bar from 'common/bar';\nimport foo from 'common/foo';\nimport bar from 'app/bar';\nimport foo from 'app/foo';\nimport foo from 'foo';\n", parserOptions: { sourceType: "module" },
+          errors: [{ message: "Expected 'foo' to be imported before 'common/bar' (vendors go first)." }] },
+        { code: "import bar from 'common/bar';\nimport foo from 'common/foo';\nimport bar from 'app/bar';\nimport foo from 'app/foo';\nimport foo from 'foo';\nimport bar from 'bar';\n", parserOptions: { sourceType: "module" },
+          errors: [{ message: "Expected 'foo' to be imported before 'common/bar' (vendors go first)."}, { message: "Expected 'bar' to be imported before 'common/bar' (vendors go first)." }] }
 
     ]
 
