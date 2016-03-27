@@ -52,7 +52,7 @@ Then configure the rules you want to use under the rules section.
 ## Supported Rules
 
 * [`arca/curly`](https://github.com/arcanis/eslint-plugin-arca/blob/master/docs/rules/curly.md) - ensure that curly braces keep the code flow easy to read
-* [`arca/import-align`](https://github.com/arcanis/eslint-plugin-arca/blob/master/docs/rules/import-align.md) - require from keywords to be aligned
+* [`arca/import-align`](https://github.com/arcanis/eslint-plugin-arca/blob/master/docs/rules/import-align.md) - require `from` keywords to be aligned
 * [`arca/import-ordering`](https://github.com/arcanis/eslint-plugin-arca/blob/master/docs/rules/import-ordering.md) - ensure that each import in the file is correctly ordered relative to the others
 * [`arca/melted-constructs`](https://github.com/arcanis/eslint-plugin-arca/blob/master/docs/rules/melted-constructs.md) - enforce the use of melted constructs when possible
 * [`arca/newline-after-import-section`](https://github.com/arcanis/eslint-plugin-arca/blob/master/docs/rules/newline-after-var.md) - require an empty newline after an import section

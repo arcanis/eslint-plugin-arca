@@ -1,4 +1,4 @@
-# require from keywords to be aligned (import-align)
+# require `from` keywords to be aligned (import-align)
 
 ## Rule Details
 
