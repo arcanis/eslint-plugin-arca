@@ -1,4 +1,4 @@
-# Force 'else' branchs to be melted with compatible constructs (melted-constructs)
+# Enforce the use of melted constructs when possible (melted-constructs)
 
 ## Rule Details
 

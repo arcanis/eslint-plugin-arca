@@ -1,4 +1,4 @@
-# Define when should curly braces be used (curly)
+# Ensure that curly braces keep the code flow easy to read (curly)
 
 ## Rule Details
 
