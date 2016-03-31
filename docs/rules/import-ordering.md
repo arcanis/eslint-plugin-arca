@@ -2,7 +2,8 @@
 
 ## Rule Details
 
-* First, the modules have to be sorted by section (vendors, common, application)
+* First, the side-effects imports go before any other import
+* Then the modules have to be sorted by section (vendors, common, application)
 * Then they have to be sorted by path (a subdirectory goes before its index)
 * Then they have to be sorted by lexicographic order
 
@@ -24,12 +25,15 @@ import foo from 'common/foo';
 ```
 
 ```js
-import
+import foo from 'common/foo';
+import 'foo.less';
 ```
 
 The following patterns are not warnings:
 
 ```js
+import 'foo.less';
+
 import bar from 'bar/bar';
 import bar from 'bar';
 import foo from 'foo';

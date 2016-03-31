@@ -25,11 +25,14 @@ ruleTester.run("import-ordering", rule, {
 
     valid: [
 
-        { code: "import bar from 'bar/bar';\nimport bar from 'bar';\nimport foo from 'foo/foo';\nimport foo from 'foo';\n\nimport bar from 'common/bar';\nimport foo from 'common/foo';\n\nimport bar from 'app/bar/bar';\nimport foo from 'app/bar/foo';\nimport bar from 'app/foo/bar';\nimport foo from 'app/foo/foo';\n", parserOptions: { sourceType: "module" } }
+        { code: "import 'foo';\nimport bar from 'bar/bar';\nimport bar from 'bar';\nimport foo from 'foo/foo';\nimport foo from 'foo';\n\nimport bar from 'common/bar';\nimport foo from 'common/foo';\n\nimport bar from 'app/bar/bar';\nimport foo from 'app/bar/foo';\nimport bar from 'app/foo/bar';\nimport foo from 'app/foo/foo';\n", parserOptions: { sourceType: "module" } }
 
     ],
 
     invalid: [
+
+        { code: "import { bar } from 'bar';\nimport 'foo';\n", parserOptions: { sourceType: "module" },
+          errors: [{ message: "Expected 'foo' to be imported before 'bar' (side-effects go first)." }] },
 
         { code: "import foo from 'common/foo';\n\nimport bar from 'bar';\n", parserOptions: { sourceType: "module" },
           errors: [{ message: "Expected 'bar' to be imported before 'common/foo' (vendors go first)." }] },
