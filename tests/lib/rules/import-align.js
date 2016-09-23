@@ -34,9 +34,11 @@ ruleTester.run("import-align", rule, {
     invalid: [
 
         { code: "import foo from 'foo';\nimport supercalifragilisticexpialidocious from 'supercalifragilisticexpialidocious';", parserOptions: { sourceType: "module" },
+          output: "import foo                                from 'foo';\nimport supercalifragilisticexpialidocious from 'supercalifragilisticexpialidocious';",
           errors: [{ message: "Unaligned import statement" }] },
 
         { code: "import foo from 'foo';\n\nimport bar                                from 'bar';\nimport supercalifragilisticexpialidocious from 'supercalifragilisticexpialidocious';", parserOptions: { sourceType: "module" },
+          output: "import foo                                from 'foo';\n\nimport bar                                from 'bar';\nimport supercalifragilisticexpialidocious from 'supercalifragilisticexpialidocious';",
           errors: [{ message: "Unaligned import statement" }] }
 
     ]
