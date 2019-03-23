@@ -36,6 +36,21 @@ ruleTester.run("import-align", rule, {
         {
             code: "import foo                                from 'foo';\nimport supercalifragilisticexpialidocious from 'supercalifragilisticexpialidocious';\nimport {\n    A,\n    B\n} from 'foo';\n",
             parserOptions: { sourceType: "module" }
+        },
+        {
+            code: "import foo          from 'foo';\nimport bar          from 'bar';\n",
+            parserOptions: { sourceType: "module" },
+            settings: { minColumnWidth: 20 }
+        },
+        {
+            code: "import supercalifragilisticexpialidocious from 'foo';\nimport bar                                from 'bar';\n",
+            parserOptions: { sourceType: "module" },
+            settings: { minColumnWidth: 20 }
+        },
+        {
+            code: "import foo    from 'foo';\nimport bar    from 'bar';\n",
+            parserOptions: { sourceType: "module" },
+            settings: { collapseExtraSpace: false }
         }
 
     ],
@@ -60,6 +75,7 @@ ruleTester.run("import-align", rule, {
             code: "import foo   from 'foo';\nimport bar   from 'bar';\n",
             parserOptions: { sourceType: "module" },
             output: "import foo from 'foo';\nimport bar from 'bar';\n",
+            settings: { collapseExtraSpace: true },
             errors: [{ message: "Unaligned import statement" }, { message: "Unaligned import statement" }]
         },
 
@@ -67,6 +83,7 @@ ruleTester.run("import-align", rule, {
             code: "import foo    from 'foo';\nimport bar   from 'bar';\n",
             parserOptions: { sourceType: "module" },
             output: "import foo from 'foo';\nimport bar from 'bar';\n",
+            settings: { collapseExtraSpace: true },
             errors: [{ message: "Unaligned import statement" }, { message: "Unaligned import statement" }]
         },
 
@@ -74,6 +91,7 @@ ruleTester.run("import-align", rule, {
             code: "import foo    from 'foo';\nimport bar from 'bar';\n",
             parserOptions: { sourceType: "module" },
             output: "import foo from 'foo';\nimport bar from 'bar';\n",
+            settings: { collapseExtraSpace: true },
             errors: [{ message: "Unaligned import statement" }]
         },
 
@@ -81,6 +99,7 @@ ruleTester.run("import-align", rule, {
             code: "import { foo }    from 'foo';\nimport bar       from 'bar';\n",
             parserOptions: { sourceType: "module" },
             output: "import { foo } from 'foo';\nimport bar     from 'bar';\n",
+            settings: { collapseExtraSpace: true },
             errors: [{ message: "Unaligned import statement" }, { message: "Unaligned import statement" }]
         },
 
@@ -88,8 +107,25 @@ ruleTester.run("import-align", rule, {
             code: "import { foo }    from 'foo';\nimport bar     from 'bar';\n",
             parserOptions: { sourceType: "module" },
             output: "import { foo } from 'foo';\nimport bar     from 'bar';\n",
+            settings: { collapseExtraSpace: true },
             errors: [{ message: "Unaligned import statement" }]
         },
+
+        {
+            code: "import foo       from 'foo';\nimport bar       from 'bar';\n",
+            output: "import foo          from 'foo';\nimport bar          from 'bar';\n",
+            parserOptions: { sourceType: "module" },
+            settings: { minColumnWidth: 20 },
+            errors: [{ message: "Unaligned import statement" }, { message: "Unaligned import statement" }]
+        },
+
+        {
+            code: "import foo              from 'foo';\nimport bar              from 'bar';\n",
+            output: "import foo          from 'foo';\nimport bar          from 'bar';\n",
+            parserOptions: { sourceType: "module" },
+            settings: { minColumnWidth: 20, collapseExtraSpace: true },
+            errors: [{ message: "Unaligned import statement" }, { message: "Unaligned import statement" }]
+        }
 
     ]
 
