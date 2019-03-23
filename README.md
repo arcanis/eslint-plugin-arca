@@ -72,8 +72,8 @@ To use these options:
 {
     "rules": {
         "arca/import-align": [2, {
-            collapseExtraSpace: true,
-            minColumnWidth: 20
+            "collapseExtraSpace": true,
+            "minColumnWidth": 20
         }]
     }
 }
