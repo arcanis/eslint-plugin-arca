@@ -59,6 +59,26 @@ Then configure the rules you want to use under the rules section.
 * [`arca/newline-after-import-section`](https://github.com/arcanis/eslint-plugin-arca/blob/master/docs/rules/newline-after-var.md) - require an empty newline after an import section
 * [`arca/no-default-export`](https://github.com/arcanis/eslint-plugin-arca/blob/master/docs/rules/no-default-export.md) - disallow default exports
 
+## Options for import-align rule
+
+The import-align rule has support for some additional options:
+
+- `collapseExtraSpace` (Boolean, default: false) - If true, removes any unneeded extra space, collapsing lines to the minimum needed. Useful for correcting alignment after removing a long import.
+- `minColumnWidth` (Number, default: 0) - Ensures that the right half of each import doesn't start before the desired minimum column width. If the longest import exceeds this value, the minimum column width will be ignored and the longer value will be used for alignment.
+
+To use these options:
+
+```json
+{
+    "rules": {
+        "arca/import-align": [2, {
+            collapseExtraSpace: true,
+            minColumnWidth: 20
+        }]
+    }
+}
+```
+
 ## License
 
 > **Copyright © 2016 Maël Nison**
