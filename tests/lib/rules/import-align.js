@@ -25,21 +25,71 @@ ruleTester.run("import-align", rule, {
 
     valid: [
 
-        { code: "import foo from 'foo';\nimport bar from 'bar';\n", parserOptions: { sourceType: "module" } },
-        { code: "import foo                                from 'foo';\nimport supercalifragilisticexpialidocious from 'supercalifragilisticexpialidocious';\n", parserOptions: { sourceType: "module" } },
-        { code: "import foo                                from 'foo';\nimport supercalifragilisticexpialidocious from 'supercalifragilisticexpialidocious';\nimport {\n    A,\n    B\n} from 'foo';\n", parserOptions: { sourceType: "module" } }
+        {
+            code: "import foo from 'foo';\nimport bar from 'bar';\n",
+            parserOptions: { sourceType: "module" }
+        },
+        {
+            code: "import foo                                from 'foo';\nimport supercalifragilisticexpialidocious from 'supercalifragilisticexpialidocious';\n",
+            parserOptions: { sourceType: "module" }
+        },
+        {
+            code: "import foo                                from 'foo';\nimport supercalifragilisticexpialidocious from 'supercalifragilisticexpialidocious';\nimport {\n    A,\n    B\n} from 'foo';\n",
+            parserOptions: { sourceType: "module" }
+        }
 
     ],
 
     invalid: [
 
-        { code: "import foo from 'foo';\nimport supercalifragilisticexpialidocious from 'supercalifragilisticexpialidocious';", parserOptions: { sourceType: "module" },
-          output: "import foo                                from 'foo';\nimport supercalifragilisticexpialidocious from 'supercalifragilisticexpialidocious';",
-          errors: [{ message: "Unaligned import statement" }] },
+        {
+            code: "import foo from 'foo';\nimport supercalifragilisticexpialidocious from 'supercalifragilisticexpialidocious';",
+            parserOptions: { sourceType: "module" },
+            output: "import foo                                from 'foo';\nimport supercalifragilisticexpialidocious from 'supercalifragilisticexpialidocious';",
+            errors: [{ message: "Unaligned import statement" }]
+        },
 
-        { code: "import foo from 'foo';\n\nimport bar                                from 'bar';\nimport supercalifragilisticexpialidocious from 'supercalifragilisticexpialidocious';", parserOptions: { sourceType: "module" },
-          output: "import foo                                from 'foo';\n\nimport bar                                from 'bar';\nimport supercalifragilisticexpialidocious from 'supercalifragilisticexpialidocious';",
-          errors: [{ message: "Unaligned import statement" }] }
+        {
+            code: "import foo from 'foo';\n\nimport bar                                from 'bar';\nimport supercalifragilisticexpialidocious from 'supercalifragilisticexpialidocious';",
+            parserOptions: { sourceType: "module" },
+            output: "import foo                                from 'foo';\n\nimport bar                                from 'bar';\nimport supercalifragilisticexpialidocious from 'supercalifragilisticexpialidocious';",
+            errors: [{ message: "Unaligned import statement" }]
+        },
+
+        {
+            code: "import foo   from 'foo';\nimport bar   from 'bar';\n",
+            parserOptions: { sourceType: "module" },
+            output: "import foo from 'foo';\nimport bar from 'bar';\n",
+            errors: [{ message: "Unaligned import statement" }, { message: "Unaligned import statement" }]
+        },
+
+        {
+            code: "import foo    from 'foo';\nimport bar   from 'bar';\n",
+            parserOptions: { sourceType: "module" },
+            output: "import foo from 'foo';\nimport bar from 'bar';\n",
+            errors: [{ message: "Unaligned import statement" }, { message: "Unaligned import statement" }]
+        },
+
+        {
+            code: "import foo    from 'foo';\nimport bar from 'bar';\n",
+            parserOptions: { sourceType: "module" },
+            output: "import foo from 'foo';\nimport bar from 'bar';\n",
+            errors: [{ message: "Unaligned import statement" }]
+        },
+
+        {
+            code: "import { foo }    from 'foo';\nimport bar       from 'bar';\n",
+            parserOptions: { sourceType: "module" },
+            output: "import { foo } from 'foo';\nimport bar     from 'bar';\n",
+            errors: [{ message: "Unaligned import statement" }, { message: "Unaligned import statement" }]
+        },
+
+        {
+            code: "import { foo }    from 'foo';\nimport bar     from 'bar';\n",
+            parserOptions: { sourceType: "module" },
+            output: "import { foo } from 'foo';\nimport bar     from 'bar';\n",
+            errors: [{ message: "Unaligned import statement" }]
+        },
 
     ]
 
