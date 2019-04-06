@@ -52,7 +52,7 @@ ruleTester.run("curly", rule, {
         { code: "function test() {\n    if (test)\n        test();\n}\n",
           errors: [{ message: "Expected { after 'if' condition." }] },
         { code: "function test() {\n    if (test)\n        test();\n    else\n        test();\n}\n",
-          errors: [{ message: "Expected { after 'else'." }, { message: "Expected { after 'if' condition." }] },
+          errors: [{ message: "Expected { after 'if' condition." }, { message: "Expected { after 'else'." }] },
         { code: "if (test) {\n    test();\n} else\n    for (var test in test)\n        test();\n",
           errors: [{ message: "Unnecessary { after 'if' condition." }] },
 
