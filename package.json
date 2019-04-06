@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-arca",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "A plugin to make Maël happy",
   "keywords": [
     "eslint",
