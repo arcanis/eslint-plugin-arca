@@ -18,7 +18,8 @@
     "requireindex": "~1.1.0"
   },
   "devDependencies": {
-    "eslint": "~2.5.1",
+    "eslint": "^5.16.0",
+    "eslint-plugin-arca": "link:./",
     "mocha": "^6.0.2"
   },
   "engines": {
