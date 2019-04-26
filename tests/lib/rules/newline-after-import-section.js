@@ -30,11 +30,22 @@ ruleTester.run("newline-after-import-section", rule, {
 
     invalid: [
 
-        { code: "import foo1 from 'foo';\nimport foo2 from 'common/foo';\n", parserOptions: { sourceType: "module" },
-          errors: [{ message: "Expected blank line after import section." }] },
-        { code: "import foo1 from 'common/foo';\nimport foo2 from 'app/foo';\n", parserOptions: { sourceType: "module" },
-          errors: [{ message: "Expected blank line after import section." }] },
-        { code: "import foo1 from 'app/foo';\nexport var foo;\n", parserOptions: { sourceType: "module" },
+        {
+            code: "import foo1 from 'foo';\nimport foo2 from 'common/foo';\n",
+            output: "import foo1 from 'foo';\n\nimport foo2 from 'common/foo';\n",
+            parserOptions: { sourceType: "module" },
+            errors: [{ message: "Expected blank line after import section." }]
+        },
+        {
+            code: "import foo1 from 'common/foo';\nimport foo2 from 'app/foo';\n",
+            output: "import foo1 from 'common/foo';\n\nimport foo2 from 'app/foo';\n",
+            parserOptions: { sourceType: "module" },
+            errors: [{ message: "Expected blank line after import section." }]
+        },
+        {
+          code: "import foo1 from 'app/foo';\nexport var foo;\n",
+          output: "import foo1 from 'app/foo';\n\nexport var foo;\n",
+          parserOptions: { sourceType: "module" },
           errors: [{ message: "Expected blank line after import section." }] },
 
     ]
