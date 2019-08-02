@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-arca",
-  "version": "0.8.1",
+  "version": "0.8.3",
   "description": "A plugin to make Maël happy",
   "keywords": [
     "eslint",
@@ -10,7 +10,7 @@
   "author": "Maël Nison",
   "main": "lib/index.js",
   "scripts": {
-    "test": "$(npm bin)/mocha tests/**/*.js --reporter dot",
+    "test": "yarn mocha tests/**/*.js --reporter dot",
     "preversion": "npm test",
     "postversion": "git push && git push --tags"
   },
