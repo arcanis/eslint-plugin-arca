@@ -18,20 +18,28 @@ var rule = require("../../../lib/rules/no-default-export"),
 // Tests
 //------------------------------------------------------------------------------
 
+var parserOptions = { sourceType: "module", ecmaVersion: 2015 };
+
 var ruleTester = new RuleTester();
 
 ruleTester.run("no-default-export", rule, {
 
     valid: [
 
-        { code: "export function foo() {\n}\n", parserOptions: { sourceType: "module" } }
+        {
+            code: "export function foo() {\n}\n",
+            parserOptions: parserOptions
+        }
 
     ],
 
     invalid: [
 
-        { code: "export default function () {\n}\n", parserOptions: { sourceType: "module" },
-          errors: [{ message: "Unexpected default export." }] }
+        {
+            code: "export default function () {\n}\n",
+            parserOptions: parserOptions,
+            errors: [{ message: "Unexpected default export." }]
+        }
 
     ]
 

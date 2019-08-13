@@ -41,20 +41,34 @@ ruleTester.run("curly", rule, {
 
     invalid: [
 
-        { code: "for (var test in test) {\n    test();\n}\n",
-          errors: [{ message: "Unnecessary { after 'for-in'." }] },
-        { code: "if (test)\n    test = {\n        test: test\n    };\n",
-          errors: [{ message: "Expected { after 'if' condition." }] },
-        { code: "if (test) {\n    doSomething();\n}\n",
-          errors: [{ message: "Unnecessary { after 'if' condition." }] },
-        { code: "if (test)\n    if (test) {\n    test();\n    }\n",
-          errors: [{ message: "Unnecessary { after 'if' condition." }] },
-        { code: "function test() {\n    if (test)\n        test();\n}\n",
-          errors: [{ message: "Expected { after 'if' condition." }] },
-        { code: "function test() {\n    if (test)\n        test();\n    else\n        test();\n}\n",
-          errors: [{ message: "Expected { after 'if' condition." }, { message: "Expected { after 'else'." }] },
-        { code: "if (test) {\n    test();\n} else\n    for (var test in test)\n        test();\n",
-          errors: [{ message: "Unnecessary { after 'if' condition." }] },
+        {
+            code: "for (var test in test) {\n    test();\n}\n",
+            errors: [{ message: "Unnecessary { after 'for-in'." }]
+        },
+        {
+            code: "if (test)\n    test = {\n        test: test\n    };\n",
+            errors: [{ message: "Expected { after 'if' condition." }]
+        },
+        {
+            code: "if (test) {\n    doSomething();\n}\n",
+            errors: [{ message: "Unnecessary { after 'if' condition." }]
+        },
+        {
+            code: "if (test)\n    if (test) {\n    test();\n    }\n",
+            errors: [{ message: "Unnecessary { after 'if' condition." }]
+        },
+        {
+            code: "function test() {\n    if (test)\n        test();\n}\n",
+            errors: [{ message: "Expected { after 'if' condition." }]
+        },
+        {
+            code: "function test() {\n    if (test)\n        test();\n    else\n        test();\n}\n",
+            errors: [{ message: "Expected { after 'if' condition." }, { message: "Expected { after 'else'." }]
+        },
+        {
+            code: "if (test) {\n    test();\n} else\n    for (var test in test)\n        test();\n",
+            errors: [{ message: "Unnecessary { after 'if' condition." }]
+        }
 
     ]
 
