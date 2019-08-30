@@ -136,6 +136,12 @@ ruleTester.run("import-ordering", rule, {
             output: "import {\n  bar\n} from 'bar';\nimport foo from 'foo';\n// hello-world\n",
             parserOptions: parserOptions,
             errors: [{ message: "Expected 'bar' to be imported before 'foo' (lexicographic order)."}]
+        },
+        {
+            code: "import foo from 'foo';\nvar hello = 42;\nimport bar from 'bar';\n",
+            output: "import bar from 'bar';\nimport foo from 'foo';\nvar hello = 42;\n",
+            parserOptions: parserOptions,
+            errors: [{ message: "Expected 'bar' to be imported before 'foo' (lexicographic order)."}]
         }
 
     ]
