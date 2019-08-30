@@ -106,6 +106,12 @@ ruleTester.run("import-ordering", rule, {
           output: null,
           parserOptions: parserOptions,
           errors: [{ message: "Expected 'common/bar' to be imported before 'common/foo' (lexicographic order)."}]
+        },
+        {
+            code: "import foo from 'foo';\nimport {\n  bar\n} from 'bar';\n",
+            output: "import {\n  bar\n} from 'bar';\nimport foo from 'foo';\n",
+            parserOptions: parserOptions,
+            errors: [{ message: "Expected 'bar' to be imported before 'foo' (lexicographic order)."}]
         }
 
     ]
