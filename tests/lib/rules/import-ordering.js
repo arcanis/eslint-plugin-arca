@@ -102,14 +102,38 @@ ruleTester.run("import-ordering", rule, {
             errors: [{ message: "Expected 'foo' to be imported before 'common/bar' (vendors go first)."}, { message: "Expected 'bar' to be imported before 'common/bar' (vendors go first)." }]
         },
         {
-          code: "import bar from 'common/foo';\n// This cant be automatically fixed\nimport bar2 from 'common/bar';",
-          output: null,
-          parserOptions: parserOptions,
-          errors: [{ message: "Expected 'common/bar' to be imported before 'common/foo' (lexicographic order)."}]
-        },
-        {
             code: "import foo from 'foo';\nimport {\n  bar\n} from 'bar';\n",
             output: "import {\n  bar\n} from 'bar';\nimport foo from 'foo';\n",
+            parserOptions: parserOptions,
+            errors: [{ message: "Expected 'bar' to be imported before 'foo' (lexicographic order)."}]
+        },
+        {
+            code: "import foo from 'foo';\n// hello-world\nimport {\n  bar\n} from 'bar';\n",
+            output: "// hello-world\nimport {\n  bar\n} from 'bar';\nimport foo from 'foo';\n",
+            parserOptions: parserOptions,
+            errors: [{ message: "Expected 'bar' to be imported before 'foo' (lexicographic order)."}]
+        },
+        {
+            code: "// hello-world\nimport foo from 'foo';\nimport {\n  bar\n} from 'bar';\n",
+            output: "import {\n  bar\n} from 'bar';\n// hello-world\nimport foo from 'foo';\n",
+            parserOptions: parserOptions,
+            errors: [{ message: "Expected 'bar' to be imported before 'foo' (lexicographic order)."}]
+        },
+        {
+            code: "/* hello-world */\nimport foo from 'foo';\nimport {\n  bar\n} from 'bar';\n",
+            output: "/* hello-world */\nimport {\n  bar\n} from 'bar';\nimport foo from 'foo';\n",
+            parserOptions: parserOptions,
+            errors: [{ message: "Expected 'bar' to be imported before 'foo' (lexicographic order)."}]
+        },
+        {
+            code: "import foo from 'foo';\nimport {\n  bar\n} from 'bar';\n/* hello-world */\n",
+            output: "import {\n  bar\n} from 'bar';\nimport foo from 'foo';\n/* hello-world */\n",
+            parserOptions: parserOptions,
+            errors: [{ message: "Expected 'bar' to be imported before 'foo' (lexicographic order)."}]
+        },
+        {
+            code: "import foo from 'foo';\nimport {\n  bar\n} from 'bar';\n// hello-world\n",
+            output: "import {\n  bar\n} from 'bar';\nimport foo from 'foo';\n// hello-world\n",
             parserOptions: parserOptions,
             errors: [{ message: "Expected 'bar' to be imported before 'foo' (lexicographic order)."}]
         }
