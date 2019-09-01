@@ -54,6 +54,12 @@ ruleTester.run("newline-after-import-section", rule, {
             errors: [{ message: "Expected blank line after import section." }]
         },
         {
+            code: "import bar from 'app/bar';\n// hello-world\nimport foo from 'app/foo';\n",
+            output: "import bar from 'app/bar';\n// hello-world\nimport foo from 'app/foo';\n",
+            parserOptions: parserOptions,
+            errors: [],
+        },
+        {
             code: "import foo from 'common/foo';\n\nimport bar from 'common/bar';\n",
             output: "import foo from 'common/foo';\nimport bar from 'common/bar';\n",
             parserOptions: parserOptions,
