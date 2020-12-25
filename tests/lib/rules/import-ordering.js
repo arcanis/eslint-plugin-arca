@@ -142,6 +142,13 @@ ruleTester.run("import-ordering", rule, {
             output: "import bar from 'bar';\nimport foo from 'foo';\nvar hello = 42;\n",
             parserOptions: parserOptions,
             errors: [{ message: "Expected 'bar' to be imported before 'foo' (lexicographic order)."}]
+        },
+        {
+            code: "import {\n  bar1,\n  bar2,\n} from 'bar';\nimport foo from 'foo';\n",
+            output: "import foo from 'foo';\nimport {\n  bar1,\n  bar2,\n} from 'bar';\n",
+            parserOptions: parserOptions,
+            errors: [{ message: "Expected 'foo' to be imported before 'bar' (multiline imports are last)."}],
+            options: [{ hoistOneliners: true }]
         }
 
     ]
