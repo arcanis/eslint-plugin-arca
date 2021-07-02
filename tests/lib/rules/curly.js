@@ -43,7 +43,8 @@ ruleTester.run("curly", rule, {
 
         {
             code: "for (var test in test) {\n    test();\n}\n",
-            errors: [{ message: "Unnecessary { after 'for-in'." }]
+            errors: [{ message: "Unnecessary { after 'for-in'." }],
+            output: "for (var test in test) \n    test();\n\n"
         },
         {
             code: "if (test)\n    test = {\n        test: test\n    };\n",
@@ -51,11 +52,13 @@ ruleTester.run("curly", rule, {
         },
         {
             code: "if (test) {\n    doSomething();\n}\n",
-            errors: [{ message: "Unnecessary { after 'if' condition." }]
+            errors: [{ message: "Unnecessary { after 'if' condition." }],
+            output: "if (test) \n    doSomething();\n\n"
         },
         {
-            code: "if (test)\n    if (test) {\n    test();\n    }\n",
-            errors: [{ message: "Unnecessary { after 'if' condition." }]
+            code: "if (test)\n    if (test) {\n        test();\n    }\n",
+            errors: [{ message: "Expected { after 'if' condition." }, { message: "Unnecessary { after 'if' condition." }],
+            output: "if (test)\n    if (test) \n        test();\n    \n"
         },
         {
             code: "function test() {\n    if (test)\n        test();\n}\n",
@@ -67,7 +70,8 @@ ruleTester.run("curly", rule, {
         },
         {
             code: "if (test) {\n    test();\n} else\n    for (var test in test)\n        test();\n",
-            errors: [{ message: "Unnecessary { after 'if' condition." }]
+            errors: [{ message: "Unnecessary { after 'if' condition." }],
+            output: "if (test) \n    test();\n else\n    for (var test in test)\n        test();\n"
         }
 
     ]
