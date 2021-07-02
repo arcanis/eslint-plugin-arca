@@ -10,7 +10,7 @@
   "author": "Maël Nison",
   "main": "lib/index.js",
   "scripts": {
-    "test": "yarn mocha tests/**/*.js --reporter dot",
+    "test": "yarn mocha --require ts-node/register/transpile-only --reporter dot **/*.test.ts",
     "preversion": "npm test",
     "postversion": "git push && git push --tags"
   },
@@ -18,9 +18,15 @@
     "requireindex": "~1.1.0"
   },
   "devDependencies": {
+    "@types/eslint": "^7.2.13",
+    "@types/estree": "^0.0.49",
+    "@types/node": "^15.14.0",
+    "@yarnpkg/eslint-config": "^0.3.0-rc.6",
     "eslint": "^7.29.0",
     "eslint-plugin-arca": "link:./",
-    "mocha": "^6.0.2"
+    "mocha": "^9.0.1",
+    "ts-node": "^10.0.0",
+    "typescript": "^4.3.5"
   },
   "engines": {
     "node": ">=0.10.0"
