@@ -14,7 +14,7 @@ const ruleTester = new RuleTester();
 
 ruleTester.run(`import-ordering`, rule, {
   valid: [{
-    code: `import 'foo';\nimport bar1 from 'bar/bar';\nimport bar2 from 'bar';\nimport foo1 from 'foo/foo';\nimport foo2 from 'foo';\n\nimport bar3 from 'common/bar';\nimport foo3 from 'common/foo';\n\nimport bar4 from 'app/bar/bar';\nimport foo4 from 'app/bar/foo';\nimport bar5 from 'app/foo/bar';\nimport foo5 from 'app/foo/foo';\n`,
+    code: `import 'foo';\nimport bar1 from 'bar/bar';\nimport bar2 from 'bar';\nimport foo1 from 'foo/foo';\nimport foo2 from 'foo';\n\nimport bar3 from 'common/bar';\nimport foo3 from 'common/foo';\n\nimport bar4 from 'app/bar/bar';\nimport foo4 from 'app/bar/foo';\nimport bar5 from 'app/foo/bar';\nimport foo5 from 'app/foo/foo';\nimport './paz';\n`,
     parserOptions,
   }, {
     // When the path is the same, keep user's order
@@ -26,7 +26,29 @@ ruleTester.run(`import-ordering`, rule, {
     output: `import 'foo';\nimport { bar } from 'bar';\n`,
     parserOptions,
     errors: [{message: `Expected 'foo' to be imported before 'bar' (side-effects go first).`}],
-  }, {
+  },
+  {
+    code: `import './paz';\nimport { bar } from 'bar';\n`,
+    output: `import { bar } from 'bar';\nimport './paz';\n`,
+    parserOptions,
+    errors: [{message: `Expected 'bar' to be imported before './paz' (local side-effects go last).`}],
+  },
+  {
+    code: `import './paz';\nimport 'foo';\n`,
+    output: `import 'foo';\nimport './paz';\n`,
+    parserOptions,
+    errors: [{message: `Expected 'foo' to be imported before './paz' (local side-effects go last).`}],
+  },
+  {
+    code: `import './paz';\nimport { bar } from 'bar';\nimport 'foo';\n`,
+    output: `import 'foo';\nimport { bar } from 'bar';\nimport './paz';\n`,
+    parserOptions,
+    errors: [
+      {message: `Expected 'bar' to be imported before './paz' (local side-effects go last).`},
+      {message: `Expected 'foo' to be imported before './paz' (local side-effects go last).`}
+    ],
+  },
+  {
     code: `import foo from 'common/foo';\n\nimport bar from 'bar';\n`,
     output: `import bar from 'bar';\n\nimport foo from 'common/foo';\n`,
     parserOptions,

@@ -161,11 +161,35 @@ const rule: Rule.RuleModule = {
       if (a.type !== `ImportDeclaration` || b.type !== `ImportDeclaration`)
         return [null];
 
-      if (a.specifiers.length && !b.specifiers.length)
-        return [1, `side-effects go first`];
+      const aSource = a.source.value;
+      const bSource = b.source.value;
 
-      if (!a.specifiers.length && b.specifiers.length)
+      if (typeof aSource !== `string` || typeof bSource !== `string`)
+        return [null];
+
+      const aHasSideEffects = !a.specifiers.length;
+      const bHasSideEffects = !b.specifiers.length;
+      const aIsLocal = aSource.startsWith('.');
+      const bIsLocal = bSource.startsWith('.');
+
+      if (!aHasSideEffects && bHasSideEffects) {
+        if (bIsLocal)
+          return [-1, `local side-effects go last`];
+        return [1, `side-effects go first`];
+      }
+
+      if (aHasSideEffects && !bHasSideEffects) {
+        if (aIsLocal)
+          return [1, `local side-effects go last`];
         return [-1, `side-effects go first`];
+      }
+
+      if (aHasSideEffects && bHasSideEffects) {
+        if (aIsLocal && !bIsLocal)
+          return [1, `local side-effects go last`];
+        if (!aIsLocal && bIsLocal)
+          return [-1, `local side-effects go last`];
+      }
 
       const aMultiline = a.loc!.start.line !== a.loc!.end.line;
       const bMultiline = b.loc!.start.line !== b.loc!.end.line;
@@ -179,11 +203,6 @@ const rule: Rule.RuleModule = {
         }
       }
 
-      const aSource = a.source.value;
-      const bSource = b.source.value;
-
-      if (typeof aSource !== `string` || typeof bSource !== `string`)
-        return [null];
       if (aSource === bSource)
         return [null];
 
