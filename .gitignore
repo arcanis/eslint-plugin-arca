@@ -1,3 +1,4 @@
 .yarn/*
 !.yarn/releases
+!.yarn/sdks
 .pnp.*
