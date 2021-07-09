@@ -2,10 +2,15 @@
 
 ## Rule Details
 
-* First, the side-effects imports go before any other import
-* Then the modules have to be sorted by section (vendors, common, application)
-* Then they have to be sorted by path (a subdirectory goes before its index)
-* Then they have to be sorted by lexicographic order
+* First, global side-effect imports go before any other import
+* Then third-party imports (possibly split into sections)
+* Then named local imports
+* Finally, local side-effect imports go last
+
+Also note that within a same category, imports are sorted:
+
+* First by path (a subdirectory goes before its index)
+* Then by lexicographic order
 
 The following patterns are considered warnings:
 
@@ -29,6 +34,11 @@ import foo from 'common/foo';
 import 'foo.less';
 ```
 
+```js
+import './foo.less';
+import 'foo.less';
+```
+
 The following patterns are not warnings:
 
 ```js
@@ -47,6 +57,11 @@ import bar from 'app/bar/bar';
 import bar from 'app/bar';
 import foo from 'app/foo/foo';
 import foo from 'app/foo';
+
+import {Bar} from './Bar';
+import {Foo} from './Foo';
+
+import './Component.less';
 ```
 
 ### Option
