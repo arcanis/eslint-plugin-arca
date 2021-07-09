@@ -65,7 +65,7 @@ Then configure the rules you want to use under the rules section.
 
 The import-align rule has support for some additional options:
 
-- `collapseExtraSpace` (Boolean, default: false) - If true, removes any unneeded extra space, collapsing lines to the minimum needed. Useful for correcting alignment after removing a long import.
+- `collapseExtraSpaces` (Boolean, default: false) - If true, removes any unneeded extra space, collapsing lines to the minimum needed. Useful for correcting alignment after removing a long import.
 - `minColumnWidth` (Number, default: 0) - Ensures that the right half of each import doesn't start before the desired minimum column width. If the longest import exceeds this value, the minimum column width will be ignored and the longer value will be used for alignment.
 
 To use these options:
@@ -74,7 +74,7 @@ To use these options:
 {
     "rules": {
         "arca/import-align": [2, {
-            "collapseExtraSpace": true,
+            "collapseExtraSpaces": true,
             "minColumnWidth": 20
         }]
     }
