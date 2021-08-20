@@ -955,7 +955,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-arca@^0.10.0, eslint-plugin-arca@workspace:.":
+"eslint-plugin-arca@link:./::locator=eslint-plugin-arca%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "eslint-plugin-arca@link:./::locator=eslint-plugin-arca%40workspace%3A."
+  languageName: node
+  linkType: soft
+
+"eslint-plugin-arca@npm:^0.10.0":
+  version: 0.10.1
+  resolution: "eslint-plugin-arca@npm:0.10.1"
+  dependencies:
+    requireindex: ~1.1.0
+  checksum: ac19f1976ec8a7a5e4e4e8ba24a427b670e7ad0b2e244157a55f60aa8f569edd51c687162f1bfebbfd5fc8abee8282b763215b18bd56245e000f9cb94d4d72c0
+  languageName: node
+  linkType: hard
+
+"eslint-plugin-arca@workspace:.":
   version: 0.0.0-use.local
   resolution: "eslint-plugin-arca@workspace:."
   dependencies:
@@ -970,12 +985,6 @@ __metadata:
     ts-node: ^10.0.0
     typescript: ^4.3.5
   languageName: unknown
-  linkType: soft
-
-"eslint-plugin-arca@link:./::locator=eslint-plugin-arca%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "eslint-plugin-arca@link:./::locator=eslint-plugin-arca%40workspace%3A."
-  languageName: node
   linkType: soft
 
 "eslint-plugin-react@npm:^7.20.0":
