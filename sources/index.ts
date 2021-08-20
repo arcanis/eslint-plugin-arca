@@ -14,13 +14,13 @@ import meltedConstructsRule          from './rules/melted-constructs';
 import newlineAfterImportSectionRule from './rules/newline-after-import-section';
 import noDefaultExportRule           from './rules/no-default-export';
 
-export const rules = [
-  curlyRule,
-  importAbsolutesRule,
-  importAlignRule,
-  importOrderingRule,
-  importQuotesRule,
-  meltedConstructsRule,
-  newlineAfterImportSectionRule,
-  noDefaultExportRule,
-];
+export const rules = {
+  [`curly`]: curlyRule,
+  [`import-absolutes`]: importAbsolutesRule,
+  [`import-align`]: importAlignRule,
+  [`import-ordering`]: importOrderingRule,
+  [`import-quotes`]: importQuotesRule,
+  [`melted-constructs`]: meltedConstructsRule,
+  [`newline-after-import-section`]: newlineAfterImportSectionRule,
+  [`no-default-export`]: noDefaultExportRule,
+};
