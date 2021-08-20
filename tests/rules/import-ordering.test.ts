@@ -5,9 +5,8 @@
  * See LICENSE file in root directory for full license.
  */
 
+import rule         from 'eslint-plugin-arca/sources/rules/import-ordering';
 import {RuleTester} from 'eslint';
-
-import rule         from '../../../lib/rules/import-ordering';
 
 const parserOptions = {sourceType: `module`, ecmaVersion: 2015} as const;
 const ruleTester = new RuleTester();
@@ -45,7 +44,7 @@ ruleTester.run(`import-ordering`, rule, {
     parserOptions,
     errors: [
       {message: `Expected 'bar' to be imported before './paz' (local side-effects go last).`},
-      {message: `Expected 'foo' to be imported before './paz' (local side-effects go last).`}
+      {message: `Expected 'foo' to be imported before './paz' (local side-effects go last).`},
     ],
   },
   {

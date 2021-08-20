@@ -7,7 +7,7 @@
 
 import {RuleTester} from 'eslint';
 
-import rule         from '../../../lib/rules/import-align';
+import rule         from 'eslint-plugin-arca/sources/rules/import-align';
 
 const parserOptions = {sourceType: `module`, ecmaVersion: 2015} as const;
 const ruleTester = new RuleTester();

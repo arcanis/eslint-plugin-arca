@@ -8,16 +8,17 @@
     "eslint-plugin"
   ],
   "author": "Maël Nison",
-  "main": "lib/index.js",
+  "main": "sources/index.ts",
   "scripts": {
+    "prepack": "rm -rf lib && rollup -c",
+    "postpack": "rm -rf lib",
     "test": "yarn mocha --require $(node -p 'require.resolve(\"ts-node/register/transpile-only\")') --reporter dot **/*.test.ts",
     "preversion": "npm test",
     "postversion": "git push && git push --tags"
   },
-  "dependencies": {
-    "requireindex": "~1.1.0"
-  },
   "devDependencies": {
+    "@rollup/plugin-node-resolve": "^10.0.0",
+    "@rollup/plugin-typescript": "^6.1.0",
     "@types/eslint": "^7.2.13",
     "@types/estree": "^0.0.49",
     "@types/node": "^15.14.0",
@@ -25,11 +26,19 @@
     "eslint": "^7.29.0",
     "eslint-plugin-arca": "link:./",
     "mocha": "^9.0.2",
+    "rollup": "^2.16.1",
     "ts-node": "^10.0.0",
+    "tslib": "^2.3.1",
     "typescript": "^4.3.5"
   },
   "engines": {
     "node": ">=0.10.0"
+  },
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "main": "lib/index.js"
   },
   "license": "ISC"
 }

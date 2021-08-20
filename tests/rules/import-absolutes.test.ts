@@ -5,9 +5,8 @@
  * See LICENSE file in root directory for full license.
  */
 
+import rule         from 'eslint-plugin-arca/sources/rules/import-absolutes';
 import {RuleTester} from 'eslint';
-
-import rule         from '../../../lib/rules/import-absolutes';
 
 const parserOptions = {sourceType: `module`, ecmaVersion: 2015} as const;
 const ruleTester = new RuleTester();

@@ -5,9 +5,8 @@
  * See LICENSE file in root directory for full license.
  */
 
+import rule         from 'eslint-plugin-arca/sources/rules/curly';
 import {RuleTester} from 'eslint';
-
-import rule         from '../../../lib/rules/curly';
 
 const ruleTester = new RuleTester();
 

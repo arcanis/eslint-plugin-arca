@@ -6,9 +6,8 @@
  */
 "use strict";
 
+import rule         from 'eslint-plugin-arca/sources/rules/melted-constructs';
 import {RuleTester} from 'eslint';
-
-import rule         from '../../../lib/rules/melted-constructs';
 
 const parserOptions = {ecmaVersion: 2015} as const;
 const ruleTester = new RuleTester();
