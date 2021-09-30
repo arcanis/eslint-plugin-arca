@@ -22,7 +22,7 @@ ruleTester.run(`import-absolutes`, rule, {
   }],
   invalid: [{
     code: `import './foo';\n`,
-    output: `import 'eslint-plugin-arca/tests/lib/rules/foo';\n`,
+    output: `import 'eslint-plugin-arca/tests/rules/foo';\n`,
     filename: __filename,
     parserOptions,
     errors: [{message: `Expected import to be package-absolute (rather than './foo').`}],
