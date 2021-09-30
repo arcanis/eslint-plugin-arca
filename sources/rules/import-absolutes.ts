@@ -41,15 +41,27 @@ const rule: Rule.RuleModule = {
       if (typeof node.source.value !== `string`)
         return;
 
-      const targetPath = path.resolve(path.dirname(sourcePath), node.source.value);
+      const sourceDirName = path.dirname(sourcePath);
 
+      const targetPath = path.resolve(sourceDirName, node.source.value);
       const absoluteImport = getAbsoluteImport(targetPath);
+      const normalizedRelativePath = `./${path.relative(sourceDirName, targetPath)}` || `.`;
+
+      const keepRelativeImport = keepRelative(normalizedRelativePath);
+
+      if (keepRelativeImport && normalizedRelativePath === node.source.value)
+        return;
+
       if (!absoluteImport)
         return;
 
+      const message = keepRelativeImport
+        ? `Expected relative import to be normalized (rather than '{{source}}')`
+        : `Expected import to be package-absolute (rather than '{{source}}').`;
+
       context.report({
         node,
-        message: `Expected import to be package-absolute (rather than '{{source}}').`,
+        message,
 
         data: {
           source: node.source.value,
@@ -59,7 +71,8 @@ const rule: Rule.RuleModule = {
           const fromRange = node.source.range![0];
           const toRange = node.source.range![1];
 
-          return fixer.replaceTextRange([fromRange, toRange], `'${absoluteImport}'`);
+          const replacement = keepRelativeImport ? normalizedRelativePath : absoluteImport;
+          return fixer.replaceTextRange([fromRange, toRange], `'${replacement}'`);
         },
       });
     }
@@ -100,7 +113,7 @@ const rule: Rule.RuleModule = {
         if (typeof importPath !== `string`)
           return;
 
-        if (!importPath.match(/^\.{0,2}\//) || keepRelative(importPath))
+        if (!importPath.match(/^\.{0,2}\//))
           return;
 
         reportExpectedAbsoluteImportError(node);
