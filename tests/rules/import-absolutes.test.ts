@@ -36,5 +36,12 @@ ruleTester.run(`import-absolutes`, rule, {
     filename: __filename,
     parserOptions,
     errors: [{message: `Expected import to be package-absolute (rather than '../foo').`}],
+    options: [{keepRelative: `^\\.\\/[^\\/]*$`}],
+  }, {
+    code: `import './/foo';\n`,
+    output: `import './foo';\n`,
+    filename: __filename,
+    parserOptions,
+    errors: [{message: `Expected relative import to be normalized (rather than './/foo')`}],
     options: [{keepRelative: `^\\.\\/[^\\/]*$`}]}],
 });
