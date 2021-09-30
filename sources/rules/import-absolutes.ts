@@ -13,9 +13,24 @@ import path             from 'path';
 const rule: Rule.RuleModule = {
   meta: {
     fixable: `code`,
+
+    schema: [{
+      type: `object`,
+
+      properties: {
+        keepRelative: {
+          type: `string`,
+        },
+      },
+
+      additionalProperties: false,
+    }],
   },
 
   create(context) {
+    const keepRelativeRegex = context?.options[0]?.keepRelative ? new RegExp(context.options[0].keepRelative) : undefined;
+    const keepRelative = keepRelativeRegex ? (path: string) => keepRelativeRegex.test(path) : () => false;
+
     const sourcePath = context.getFilename();
 
     let sourcePrefix = path.dirname(sourcePath);
@@ -80,10 +95,12 @@ const rule: Rule.RuleModule = {
 
     return {
       ImportDeclaration (node) {
-        if (typeof node.source.value !== `string`)
+        const importPath = node.source.value;
+
+        if (typeof importPath !== `string`)
           return;
 
-        if (!node.source.value.match(/^\.{0,2}\//))
+        if (!importPath.match(/^\.{0,2}\//) || keepRelative(importPath))
           return;
 
         reportExpectedAbsoluteImportError(node);
