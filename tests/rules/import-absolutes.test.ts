@@ -19,6 +19,10 @@ ruleTester.run(`import-absolutes`, rule, {
     // When the path is the same, keep user's order
     code: `import {bar1} from 'bar';\nimport {bar2} from 'bar';\nimport baz from 'baz';\nimport {foo2} from 'foo';\nimport {foo1} from 'foo';`,
     parserOptions,
+  }, {
+    code: `import './foo';\n`,
+    parserOptions,
+    options: [{keepRelative: `^\\.\\/[^\\/]*$`}],
   }],
   invalid: [{
     code: `import './foo';\n`,
@@ -26,5 +30,11 @@ ruleTester.run(`import-absolutes`, rule, {
     filename: __filename,
     parserOptions,
     errors: [{message: `Expected import to be package-absolute (rather than './foo').`}],
-  }],
+  }, {
+    code: `import '../foo';\n`,
+    output: `import 'eslint-plugin-arca/tests/foo';\n`,
+    filename: __filename,
+    parserOptions,
+    errors: [{message: `Expected import to be package-absolute (rather than '../foo').`}],
+    options: [{keepRelative: `^\\.\\/[^\\/]*$`}]}],
 });
