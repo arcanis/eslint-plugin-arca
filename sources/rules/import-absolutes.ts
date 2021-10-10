@@ -10,6 +10,8 @@ import type * as ESTree from 'estree';
 import fs               from 'fs';
 import path             from 'path';
 
+const isAbsolute = (path: string): boolean => (!path.match(/^\.{0,2}\//));
+
 const rule: Rule.RuleModule = {
   meta: {
     fixable: `code`,
@@ -18,7 +20,7 @@ const rule: Rule.RuleModule = {
       type: `object`,
 
       properties: {
-        keepRelative: {
+        preferRelative: {
           type: `string`,
         },
       },
@@ -28,56 +30,16 @@ const rule: Rule.RuleModule = {
   },
 
   create(context) {
-    const keepRelativeRegex = context?.options[0]?.keepRelative ? new RegExp(context.options[0].keepRelative) : undefined;
-    const keepRelative = keepRelativeRegex ? (path: string) => keepRelativeRegex.test(path) : () => false;
+    const preferRelativeRegex = context?.options[0]?.preferRelative ? new RegExp(context.options[0].preferRelative) : undefined;
+    const preferRelative = preferRelativeRegex ? (path: string) => preferRelativeRegex.test(path) : () => false;
 
     const sourcePath = context.getFilename();
 
-    let sourcePrefix = path.dirname(sourcePath);
-    if (!sourcePrefix.endsWith(path.sep))
-      sourcePrefix += path.sep;
+    let sourceDirName = path.dirname(sourcePath);
+    if (!sourceDirName.endsWith(path.sep))
+      sourceDirName += path.sep;
 
-    function reportExpectedAbsoluteImportError(node: ESTree.ImportDeclaration) {
-      if (typeof node.source.value !== `string`)
-        return;
-
-      const sourceDirName = path.dirname(sourcePath);
-
-      const targetPath = path.resolve(sourceDirName, node.source.value);
-      const absoluteImport = getAbsoluteImport(targetPath);
-      const normalizedRelativePath = `./${path.relative(sourceDirName, targetPath)}` || `.`;
-
-      const keepRelativeImport = keepRelative(normalizedRelativePath);
-
-      if (keepRelativeImport && normalizedRelativePath === node.source.value)
-        return;
-
-      if (!absoluteImport)
-        return;
-
-      const message = keepRelativeImport
-        ? `Expected relative import to be normalized (rather than '{{source}}')`
-        : `Expected import to be package-absolute (rather than '{{source}}').`;
-
-      context.report({
-        node,
-        message,
-
-        data: {
-          source: node.source.value,
-        },
-
-        fix(fixer) {
-          const fromRange = node.source.range![0];
-          const toRange = node.source.range![1];
-
-          const replacement = keepRelativeImport ? normalizedRelativePath : absoluteImport;
-          return fixer.replaceTextRange([fromRange, toRange], `'${replacement}'`);
-        },
-      });
-    }
-
-    function getAbsoluteImport(fileName: string) {
+    function getAbsoluteImport(fileName: string): string | null {
       let packagePath;
 
       let currentPath;
@@ -113,10 +75,53 @@ const rule: Rule.RuleModule = {
         if (typeof importPath !== `string`)
           return;
 
-        if (!importPath.match(/^\.{0,2}\//))
-          return;
+        const report = (message: string, replacement: string) => context.report({
+          node,
+          message,
+          data: {
+            source: importPath,
+          },
+          fix(fixer) {
+            const fromRange = node.source.range![0];
+            const toRange = node.source.range![1];
 
-        reportExpectedAbsoluteImportError(node);
+            return fixer.replaceTextRange([fromRange, toRange], `'${replacement}'`);
+          },
+        });
+
+        const targetPath = path.resolve(sourceDirName, importPath);
+        const absoluteImport = getAbsoluteImport(targetPath);
+        const normalizedRelativePath = `./${path.relative(sourceDirName, targetPath)}` || `.`;
+        const preferRelativeImport = preferRelative(normalizedRelativePath);
+
+        if (isAbsolute(importPath)) {
+          if (absoluteImport === null || !fs.existsSync(absoluteImport))
+            return;
+
+          if (preferRelativeImport) {
+            report(
+              `Expected absolute import to be relative (rather than '{{source}}').`,
+              normalizedRelativePath
+            );
+          } else if (importPath !== absoluteImport) {
+            report(
+              `Expected absolute import to be normalized (rather than '{{source}}').`,
+              absoluteImport
+            );
+          }
+        } else {
+          if (!preferRelativeImport && absoluteImport !== null) {
+            report(
+              `Expected relative import to be package-absolute (rather than '{{source}}').`,
+              absoluteImport
+            );
+          } else if (preferRelativeImport && importPath !== normalizedRelativePath) {
+            report(
+              `Expected relative import to be normalized (rather than '{{source}}').`,
+              normalizedRelativePath
+            );
+          }
+        }
       },
     };
   },

@@ -22,26 +22,26 @@ ruleTester.run(`import-absolutes`, rule, {
   }, {
     code: `import './foo';\n`,
     parserOptions,
-    options: [{keepRelative: `^\\.\\/[^\\/]*$`}],
+    options: [{preferRelative: `^\\.\\/[^\\/]*$`}],
   }],
   invalid: [{
     code: `import './foo';\n`,
     output: `import 'eslint-plugin-arca/tests/rules/foo';\n`,
     filename: __filename,
     parserOptions,
-    errors: [{message: `Expected import to be package-absolute (rather than './foo').`}],
+    errors: [{message: `Expected relative import to be package-absolute (rather than './foo').`}],
   }, {
     code: `import '../foo';\n`,
     output: `import 'eslint-plugin-arca/tests/foo';\n`,
     filename: __filename,
     parserOptions,
-    errors: [{message: `Expected import to be package-absolute (rather than '../foo').`}],
-    options: [{keepRelative: `^\\.\\/[^\\/]*$`}],
+    errors: [{message: `Expected relative import to be package-absolute (rather than '../foo').`}],
+    options: [{preferRelative: `^\\.\\/[^\\/]*$`}],
   }, {
     code: `import './/foo';\n`,
     output: `import './foo';\n`,
     filename: __filename,
     parserOptions,
-    errors: [{message: `Expected relative import to be normalized (rather than './/foo')`}],
-    options: [{keepRelative: `^\\.\\/[^\\/]*$`}]}],
+    errors: [{message: `Expected relative import to be normalized (rather than './/foo').`}],
+    options: [{preferRelative: `^\\.\\/[^\\/]*$`}]}],
 });
