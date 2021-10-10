@@ -10,7 +10,13 @@ import type * as ESTree from 'estree';
 import fs               from 'fs';
 import path             from 'path';
 
-const isAbsolute = (path: string): boolean => (!path.match(/^\.{0,2}\//));
+type ImportInfo = {
+  normalizedRelativePath: string ;
+  normalizedAbsolutePath: string | null;
+};
+
+const isAbsolute = (path: string): boolean => !path.match(/^\.{0,2}\//);
+const isRelative = (path: string): boolean => !isAbsolute(path);
 
 const rule: Rule.RuleModule = {
   meta: {
@@ -33,31 +39,25 @@ const rule: Rule.RuleModule = {
     const preferRelativeRegex = context?.options[0]?.preferRelative ? new RegExp(context.options[0].preferRelative) : undefined;
     const preferRelative = preferRelativeRegex ? (path: string) => preferRelativeRegex.test(path) : () => false;
 
-    const sourcePath = context.getFilename();
-
-    let sourceDirName = path.dirname(sourcePath);
+    let sourceDirName = path.dirname(context.getFilename());
     if (!sourceDirName.endsWith(path.sep))
       sourceDirName += path.sep;
 
+    const packagePath = getPackagePath(sourceDirName);
+    const packageInfo = packagePath && require(path.join(packagePath, `package.json`)) || {};
+
+    function isPackageImport(importPath: string): boolean {
+      if (isRelative(importPath))
+        return true;
+
+      const bareSpecifier = path.normalize(importPath).split(path.sep)[0];
+      return bareSpecifier === packageInfo.name;
+    }
+
     function getAbsoluteImport(fileName: string): string | null {
-      let packagePath;
-
-      let currentPath;
-      let nextPath = path.dirname(fileName);
-      do {
-        currentPath = nextPath;
-        nextPath = path.dirname(currentPath);
-
-        if (fs.existsSync(path.join(currentPath, `package.json`))) {
-          packagePath = currentPath;
-          break;
-        }
-      } while (nextPath !== currentPath);
-
       if (!packagePath)
         return null;
 
-      const packageInfo = require(path.join(packagePath, `package.json`));
       if (!packageInfo.name)
         return null;
 
@@ -68,12 +68,35 @@ const rule: Rule.RuleModule = {
       return `${packageInfo.name}/${subPath}`;
     }
 
+    function getImportInfo(importPath: string): ImportInfo | null {
+      if (!isPackageImport(importPath))
+        return null;
+
+      const targetPath = path.resolve(sourceDirName, importPath);
+
+      return {
+        normalizedAbsolutePath: getAbsoluteImport(targetPath),
+        normalizedRelativePath: `./${path.relative(sourceDirName, targetPath)}` || `.`,
+      };
+    }
+
+
     return {
       ImportDeclaration (node) {
-        const importPath = node.source.value;
-
-        if (typeof importPath !== `string`)
+        if (!packagePath)
           return;
+
+        const importPath = node.source.value;
+        if (typeof importPath !== `string` || !isPackageImport(importPath))
+          return;
+
+        const importInfo = getImportInfo(importPath);
+        if (!importInfo)
+          return;
+
+        const {normalizedRelativePath, normalizedAbsolutePath} = importInfo;
+
+        const preferRelativeImport = preferRelative(importInfo.normalizedRelativePath);
 
         const report = (message: string, replacement: string) => context.report({
           node,
@@ -89,31 +112,23 @@ const rule: Rule.RuleModule = {
           },
         });
 
-        const targetPath = path.resolve(sourceDirName, importPath);
-        const absoluteImport = getAbsoluteImport(targetPath);
-        const normalizedRelativePath = `./${path.relative(sourceDirName, targetPath)}` || `.`;
-        const preferRelativeImport = preferRelative(normalizedRelativePath);
-
         if (isAbsolute(importPath)) {
-          if (absoluteImport === null || !fs.existsSync(absoluteImport))
-            return;
-
           if (preferRelativeImport) {
             report(
               `Expected absolute import to be relative (rather than '{{source}}').`,
               normalizedRelativePath
             );
-          } else if (importPath !== absoluteImport) {
+          } else if (normalizedAbsolutePath && importPath !== normalizedAbsolutePath) {
             report(
               `Expected absolute import to be normalized (rather than '{{source}}').`,
-              absoluteImport
+              normalizedAbsolutePath
             );
           }
         } else {
-          if (!preferRelativeImport && absoluteImport !== null) {
+          if (!preferRelativeImport && normalizedAbsolutePath !== null) {
             report(
               `Expected relative import to be package-absolute (rather than '{{source}}').`,
-              absoluteImport
+              normalizedAbsolutePath
             );
           } else if (preferRelativeImport && importPath !== normalizedRelativePath) {
             report(
@@ -126,6 +141,21 @@ const rule: Rule.RuleModule = {
     };
   },
 };
+
+function getPackagePath(startPath: string): string | undefined {
+  let currentPath = path.resolve(startPath);
+  let previousPath;
+
+  while (currentPath !== previousPath) {
+    if (fs.existsSync(path.join(currentPath, `package.json`)))
+      return currentPath;
+
+    previousPath = currentPath;
+    currentPath = path.dirname(currentPath);
+  }
+
+  return undefined;
+}
 
 // eslint-disable-next-line arca/no-default-export
 export default rule;
