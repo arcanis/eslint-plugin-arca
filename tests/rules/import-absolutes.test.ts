@@ -43,5 +43,26 @@ ruleTester.run(`import-absolutes`, rule, {
     filename: __filename,
     parserOptions,
     errors: [{message: `Expected relative import to be normalized (rather than './/foo').`}],
+    options: [{preferRelative: `^\\.\\/[^\\/]*$`}],
+  }, {
+    code: `import '../foo';\n`,
+    output: `import 'fff/foo';\n`,
+    filename: __filename,
+    parserOptions,
+    errors: [{message: `Expected relative import to be package-absolute (rather than '../foo').`}],
+    options: [{replaceAbsolutePathStart: [{from: `eslint-plugin-arca/tests`, to: `fff`}]}]},
+  {
+    code: `import 'eslint-plugin-arca/tests/rules/bar';\n`,
+    output: `import 'fff/rules/bar';\n`,
+    filename: __filename,
+    parserOptions,
+    errors: [{message: `Expected absolute import to start with 'fff/' prefix (rather than 'eslint-plugin-arca/tests/').`}],
+    options: [{replaceAbsolutePathStart: [{from: `eslint-plugin-arca/tests`, to: `fff`}]}],
+  }, {
+    code: `import 'eslint-plugin-arca/tests/rules/baz';\nimport 'eslint-plugin-arca/tests/rules/jeej/baz';\n`,
+    output: `import './baz';\nimport 'eslint-plugin-arca/tests/rules/jeej/baz';\n`,
+    filename: __filename,
+    parserOptions,
+    errors: [{message: `Expected absolute import to be relative (rather than 'eslint-plugin-arca/tests/rules/baz').`}],
     options: [{preferRelative: `^\\.\\/[^\\/]*$`}]}],
 });
