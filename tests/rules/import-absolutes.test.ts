@@ -23,8 +23,18 @@ ruleTester.run(`import-absolutes`, rule, {
     code: `import './foo';\n`,
     parserOptions,
     options: [{preferRelative: `^\\.\\/[^\\/]*$`}],
+  }, {
+    code: `import './';\n`,
+    parserOptions,
+    options: [{preferRelative: `^\\.\\/[^\\/]*$`}],
   }],
   invalid: [{
+    code: `import './';\n`,
+    output: `import 'eslint-plugin-arca/tests/rules';\n`,
+    filename: __filename,
+    parserOptions,
+    errors: [{message: `Expected relative import to be package-absolute (rather than './').`}],
+  }, {
     code: `import './foo';\n`,
     output: `import 'eslint-plugin-arca/tests/rules/foo';\n`,
     filename: __filename,

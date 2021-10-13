@@ -20,20 +20,6 @@ const isRelative = (path: string): boolean => !isAbsolute(path);
 
 const withEndSep = (input: string) => input.endsWith(path.sep) ? input : `${input}${path.sep}`;
 
-const getBareSpecifier = (importPath: string) => {
-  const [head] = path.normalize(importPath).split(`/`);
-  return head;
-};
-const removeBareSpecifier = (importPath: string) => {
-  const [head, ...rest] = path.normalize(importPath).split(`/`);
-
-  if (rest.length === 0) {
-    return head;
-  } else {
-    return rest.join(`/`);
-  }
-};
-
 const getReplaceAbsolutePathStart = (
   replacementSpecs: Array<{from: string, to: string}>
 ): (path: string) => {adjustedPath: string, from: string, to: string} | null => {
@@ -105,7 +91,7 @@ const rule: Rule.RuleModule = {
 
     function isPackageImport(importPath: string): boolean {
       return isRelative(importPath) ||
-        getBareSpecifier(importPath) === packageInfo.name;
+        importPath.startsWith(packageInfo.name);
     }
 
     function getImportInfo(importPath: string): ImportInfo | null {
@@ -118,7 +104,7 @@ const rule: Rule.RuleModule = {
 
       const targetPath = isRelative(importPath) ?
         path.resolve(sourceDirName, importPath)
-        : path.join(packageDir, removeBareSpecifier(importPath));
+        : path.join(packageDir, importPath.slice(packageInfo.name.length));
 
       return {
         absolutePath: `${packageInfo.name}/${path.relative(packageDir, targetPath)}`,

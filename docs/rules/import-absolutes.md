@@ -30,7 +30,7 @@ import foo from './foo';
 import hello from './hello';
 ```
 
-If an import comes from the current package, and its relative form matches `preferRelative`, this rule will produce a warning.
+If an absolute import comes from the current package and the relative path to its target matches `preferRelative`, this rule will produce a warning.
 
 Inside a package named `pkg`, and when `preferRelative` is set to `^\\.\\/[^\\/]*$`, the following patterns are considered errors:
 
