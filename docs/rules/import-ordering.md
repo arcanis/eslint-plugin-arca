@@ -70,10 +70,6 @@ An array of the sections patterns. Defaults to `["^common/", "^app/"]`.
 
 Any module that doesn't match one of these regexps will be regarded as a vendor.
 
-## When Not To Use It
-
-You may want to disable this rule if you don't work with Maël.
-
 ## Further Reading
 
 * [`arca/newline-after-import-section`](https://github.com/arcanis/eslint-plugin-arca/blob/master/docs/rules/newline-after-var.md) - require an empty newline after an import section

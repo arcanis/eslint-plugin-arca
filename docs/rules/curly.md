@@ -128,7 +128,3 @@ let test = function () {
 
 };
 ```
-
-## When Not To Use It
-
-You may want to disable this rule if you don't work with Maël.

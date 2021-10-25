@@ -5,9 +5,8 @@
  * See LICENSE file in root directory for full license.
  */
 
-import {RuleTester} from 'eslint';
-
 import rule         from 'eslint-plugin-arca/sources/rules/import-quotes';
+import {RuleTester} from 'eslint';
 
 const parserOptions = {sourceType: `module`, ecmaVersion: 2015} as const;
 const ruleTester = new RuleTester();

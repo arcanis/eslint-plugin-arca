@@ -43,6 +43,6 @@ import foo   from 'foo';
 import hello from 'hello';
 ```
 
-## When Not To Use It
+### `minColumnWidth`
 
-You may want to disable this rule if you don't work with Maël.
+If set, ensures that the right half of each import doesn't start before the desired minimum column width. If the longest import exceeds this value, the minimum column width will be ignored and the longer value will be used for alignment.

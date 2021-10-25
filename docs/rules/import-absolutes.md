@@ -57,7 +57,3 @@ The following patterns are considered warnings when `replaceAbsolutePathStart` i
 ```js
 import baz from 'foo/bar/baz';
 ```
-
-## When Not To Use It
-
-You may want to disable this rule if you don't work with Maël.

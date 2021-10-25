@@ -1,7 +1,8 @@
 # Disallow default exports (no-default-export)
 
-
 ## Rule Details
+
+As the title hints, this rule prevents you from using default exports.
 
 The following patterns are considered warnings:
 
@@ -16,7 +17,3 @@ The following patterns are not warnings:
 export function foo() {
 }
 ```
-
-## When Not To Use It
-
-You may want to disable this rule if you don't work with Maël.

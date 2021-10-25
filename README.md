@@ -1,26 +1,20 @@
 # eslint-plugin-arca
 
-> *A plugin to make Maël happy.*
+> *The @arcanis personal collection of ESLint rules.*
 
-I usually have strong preferences about what a pretty code should look like. This repo contains some ESLint rules that help enforce this style.
+[![](https://img.shields.io/npm/v/eslint-plugin-arca.svg)]() [![](https://img.shields.io/npm/l/eslint-plugin-arca.svg)]() [![](https://img.shields.io/badge/developed%20with-Yarn%202-blue)](https://github.com/yarnpkg/berry)
 
-Note that some people might say that I might be a bit too strict on some things, and they might be right.
+I tend to have strong personal preferences about what readable code should look like, and they don't always match how the Prettier rules would work. This repo contains some ESLint rules that help enforce my style at no cost for other contributors, as they are all intended to be autofixable.
+
+Most of these rules are available as a preset via [`@yarnpkg/eslint-config`](https://github.com/yarnpkg/berry/tree/master/packages/eslint-config).
 
 ## Installation
 
-You'll first need to install [ESLint](http://eslint.org):
+Assuming you have [ESLint](http://eslint.org) installed, just install `eslint-plugin-arca`:
 
 ```
-$ npm i eslint --save-dev
+yarn add -D eslint-plugin-arca
 ```
-
-Next, install `eslint-plugin-arca`:
-
-```
-$ npm install eslint-plugin-arca --save-dev
-```
-
-**Note:** If you installed ESLint globally (using the `-g` flag) then you must also install `eslint-plugin-arca` globally.
 
 ## Usage
 
@@ -28,9 +22,9 @@ Add `arca` to the plugins section of your `.eslintrc` configuration file. You ca
 
 ```json
 {
-    "plugins": [
-        "arca"
-    ]
+  "plugins": [
+    "arca"
+  ]
 }
 ```
 
@@ -39,15 +33,16 @@ Then configure the rules you want to use under the rules section.
 
 ```json
 {
-    "rules": {
-        "arca/curly": 2,
-        "arca/import-absolutes": 2,
-        "arca/import-align": 2,
-        "arca/import-ordering": 2,
-        "arca/melted-constructs": 2,
-        "arca/newline-after-import-section": 2,
-        "arca/no-default-export": 2
-    }
+  "rules": {
+    "arca/curly": 2,
+    "arca/import-absolutes": 2,
+    "arca/import-align": 2,
+    "arca/import-ordering": 2,
+    "arca/jsx-longhand-props": 2,
+    "arca/melted-constructs": 2,
+    "arca/newline-after-import-section": 2,
+    "arca/no-default-export": 2
+  }
 }
 ```
 
@@ -57,29 +52,10 @@ Then configure the rules you want to use under the rules section.
 * [`arca/import-absolutes`](https://github.com/arcanis/eslint-plugin-arca/blob/master/docs/rules/import-absolutes.md) - ensure that imports are always package-absolute
 * [`arca/import-align`](https://github.com/arcanis/eslint-plugin-arca/blob/master/docs/rules/import-align.md) - require `from` keywords to be aligned
 * [`arca/import-ordering`](https://github.com/arcanis/eslint-plugin-arca/blob/master/docs/rules/import-ordering.md) - ensure that each import in the file is correctly ordered relative to the others
+* [`arca/jsx-longhand-props`](https://github.com/arcanis/eslint-plugin-arca/blob/master/docs/rules/jsx-longhand-props.md) - require JSX props to be passed using the longhand syntax
 * [`arca/melted-constructs`](https://github.com/arcanis/eslint-plugin-arca/blob/master/docs/rules/melted-constructs.md) - enforce the use of melted constructs when possible
 * [`arca/newline-after-import-section`](https://github.com/arcanis/eslint-plugin-arca/blob/master/docs/rules/newline-after-var.md) - require an empty newline after an import section
 * [`arca/no-default-export`](https://github.com/arcanis/eslint-plugin-arca/blob/master/docs/rules/no-default-export.md) - disallow default exports
-
-## Options for import-align rule
-
-The import-align rule has support for some additional options:
-
-- `collapseExtraSpaces` (Boolean, default: false) - If true, removes any unneeded extra space, collapsing lines to the minimum needed. Useful for correcting alignment after removing a long import.
-- `minColumnWidth` (Number, default: 0) - Ensures that the right half of each import doesn't start before the desired minimum column width. If the longest import exceeds this value, the minimum column width will be ignored and the longer value will be used for alignment.
-
-To use these options:
-
-```json
-{
-    "rules": {
-        "arca/import-align": [2, {
-            "collapseExtraSpaces": true,
-            "minColumnWidth": 20
-        }]
-    }
-}
-```
 
 ## License
 
