@@ -12,7 +12,8 @@
   "scripts": {
     "prepack": "rm -rf lib && rollup -c",
     "postpack": "rm -rf lib",
-    "test": "yarn mocha --require $(node -p 'require.resolve(\"ts-node/register/transpile-only\")') --reporter dot **/*.test.ts",
+    "_test": "yarn mocha --require $(node -p 'require.resolve(\"ts-node/register/transpile-only\")') --reporter dot",
+    "test": "yarn _test **/*.test.ts",
     "preversion": "npm test",
     "postversion": "git push && git push --tags"
   },

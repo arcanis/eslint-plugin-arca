@@ -10,87 +10,188 @@ import type * as ESTree from 'estree';
 import fs               from 'fs';
 import path             from 'path';
 
+type ImportInfo = {
+  relativePath: string ;
+  absolutePath: string;
+};
+
+const isAbsolute = (path: string): boolean => !path.match(/^\.{0,2}\//);
+const isRelative = (path: string): boolean => !isAbsolute(path);
+
+const withEndSep = (input: string) => input.endsWith(path.sep) ? input : `${input}${path.sep}`;
+
+const getReplaceAbsolutePathStart = (
+  replacementSpecs: Array<{from: string, to: string}>
+): (path: string) => {adjustedPath: string, from: string, to: string} | null => {
+  const validatedSpec = replacementSpecs.map(({from, to}) => {
+    if (!isAbsolute(from) || !isAbsolute(to))
+      throw new Error(`'from' specifier must be an absolute path instead of ${from}`);
+
+    const f = withEndSep(from);
+    return {
+      from: f,
+      fromRegex: new RegExp(`^${f}`),
+      to: withEndSep(to),
+    };
+  });
+
+  return path => {
+    for (const {from, fromRegex, to} of validatedSpec) {
+      const candidate = path.replace(fromRegex, to);
+      if (candidate !== path) {
+        return {adjustedPath: candidate, from, to};
+      }
+    }
+
+    return null;
+  };
+};
+
 const rule: Rule.RuleModule = {
   meta: {
     fixable: `code`,
+
+    schema: [{
+      type: `object`,
+
+      properties: {
+        preferRelative: {
+          type: `string`,
+        },
+        replaceAbsolutePathStart: {
+          type: `array`,
+
+          items: [{
+            type: `object`,
+
+            properties: {
+              from: {type: `string`},
+              to: {type: `string`},
+            },
+          }],
+        },
+      },
+
+      additionalProperties: false,
+    }],
   },
 
   create(context) {
-    const sourcePath = context.getFilename();
+    const options = context.options[0] || {};
 
-    let sourcePrefix = path.dirname(sourcePath);
-    if (!sourcePrefix.endsWith(path.sep))
-      sourcePrefix += path.sep;
+    const preferRelativeRegex = options.preferRelative ? new RegExp(options.preferRelative) : undefined;
+    const preferRelative = preferRelativeRegex ? (path: string) => preferRelativeRegex.test(path) : () => false;
 
-    function reportExpectedAbsoluteImportError(node: ESTree.ImportDeclaration) {
-      if (typeof node.source.value !== `string`)
-        return;
+    const replaceAbsolutePathStart = getReplaceAbsolutePathStart(options.replaceAbsolutePathStart || []);
 
-      const targetPath = path.resolve(path.dirname(sourcePath), node.source.value);
+    const sourceDirName = withEndSep(path.dirname(context.getFilename()));
 
-      const absoluteImport = getAbsoluteImport(targetPath);
-      if (!absoluteImport)
-        return;
+    const packageDir = getPackagePath(sourceDirName);
+    const packageInfo = packageDir && require(path.join(packageDir, `package.json`)) || {};
 
-      context.report({
-        node,
-        message: `Expected import to be package-absolute (rather than '{{source}}').`,
-
-        data: {
-          source: node.source.value,
-        },
-
-        fix(fixer) {
-          const fromRange = node.source.range![0];
-          const toRange = node.source.range![1];
-
-          return fixer.replaceTextRange([fromRange, toRange], `'${absoluteImport}'`);
-        },
-      });
+    function isPackageImport(importPath: string): boolean {
+      return isRelative(importPath) ||
+        importPath.startsWith(packageInfo.name);
     }
 
-    function getAbsoluteImport(fileName: string) {
-      let packagePath;
-
-      let currentPath;
-      let nextPath = path.dirname(fileName);
-      do {
-        currentPath = nextPath;
-        nextPath = path.dirname(currentPath);
-
-        if (fs.existsSync(path.join(currentPath, `package.json`))) {
-          packagePath = currentPath;
-          break;
-        }
-      } while (nextPath !== currentPath);
-
-      if (!packagePath)
+    function getImportInfo(importPath: string): ImportInfo | null {
+      if (
+        !isPackageImport(importPath) ||
+        packageDir === undefined ||
+        packageInfo.name === undefined
+      )
         return null;
 
-      const packageInfo = require(path.join(packagePath, `package.json`));
-      if (!packageInfo.name)
-        return null;
+      const targetPath = isRelative(importPath) ?
+        path.resolve(sourceDirName, importPath)
+        : path.join(packageDir, importPath.slice(packageInfo.name.length));
 
-      const subPath = path.relative(packagePath, fileName);
-      if (!subPath)
-        return packageInfo.name;
-
-      return `${packageInfo.name}/${subPath}`;
+      return {
+        absolutePath: `${packageInfo.name}/${path.relative(packageDir, targetPath)}`,
+        relativePath: `./${path.relative(sourceDirName, targetPath)}` || `.`,
+      };
     }
+
 
     return {
       ImportDeclaration (node) {
-        if (typeof node.source.value !== `string`)
+        const importPath = node.source.value;
+        if (typeof importPath !== `string` || !isPackageImport(importPath))
           return;
 
-        if (!node.source.value.match(/^\.{0,2}\//))
+        const importInfo = getImportInfo(importPath);
+        if (!importInfo)
           return;
 
-        reportExpectedAbsoluteImportError(node);
+        const {relativePath, absolutePath} = importInfo;
+
+        const preferRelativeImport = preferRelative(importInfo.relativePath);
+        const adjustedAbsolutePath = replaceAbsolutePathStart(absolutePath);
+
+        const report = (message: string, replacement: string) => context.report({
+          node,
+          message,
+          data: {
+            source: importPath,
+          },
+          fix(fixer) {
+            const fromRange = node.source.range![0];
+            const toRange = node.source.range![1];
+
+            return fixer.replaceTextRange([fromRange, toRange], `'${replacement}'`);
+          },
+        });
+
+        if (isAbsolute(importPath)) {
+          if (preferRelativeImport) {
+            report(
+              `Expected absolute import to be relative (rather than '{{source}}').`,
+              relativePath
+            );
+          } else if (importPath !== absolutePath) {
+            report(
+              `Expected absolute import to be normalized (rather than '{{source}}').`,
+              absolutePath
+            );
+          } else if (adjustedAbsolutePath !== null) {
+            const {adjustedPath, from, to} = adjustedAbsolutePath;
+            report(
+              `Expected absolute import to start with '${to}' prefix (rather than '${from}').`,
+              adjustedPath
+            );
+          }
+        } else {
+          if (!preferRelativeImport) {
+            report(
+              `Expected relative import to be package-absolute (rather than '{{source}}').`,
+              adjustedAbsolutePath !== null ? adjustedAbsolutePath.adjustedPath : absolutePath
+            );
+          } else if (preferRelativeImport && importPath !== relativePath) {
+            report(
+              `Expected relative import to be normalized (rather than '{{source}}').`,
+              relativePath
+            );
+          }
+        }
       },
     };
   },
 };
+
+function getPackagePath(startPath: string): string | undefined {
+  let currentPath = path.resolve(startPath);
+  let previousPath;
+
+  while (currentPath !== previousPath) {
+    if (fs.existsSync(path.join(currentPath, `package.json`)))
+      return currentPath;
+
+    previousPath = currentPath;
+    currentPath = path.dirname(currentPath);
+  }
+
+  return undefined;
+}
 
 // eslint-disable-next-line arca/no-default-export
 export default rule;
