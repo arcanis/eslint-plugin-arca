@@ -44,5 +44,10 @@ ruleTester.run(`jsx-no-string-styles`, rule, {
     output: `<foo style={{"helloWorld":"foo","fooBarBaz":"qux"}}/>\n`,
     parserOptions,
     errors: [{message: `Style props must be passed as objects.`}],
+  }, {
+    code: `<foo style="stroke-miterlimit: 1; fill: none; stroke-width: 10px; clip-path: url(#id); stroke: rgb(66, 66, 66);"/>\n`,
+    output: `<foo style={{"strokeMiterlimit":1,"fill":"none","strokeWidth":10,"clipPath":"url(#id)","stroke":"rgb(66, 66, 66)"}}/>\n`,
+    parserOptions,
+    errors: [{message: `Style props must be passed as objects.`}],
   }],
 });

@@ -71,6 +71,8 @@ const rule: Rule.RuleModule = {
           const styleKey = key.trim();
           const styleValue = buffer.trim();
 
+          if (t === T && !styleKey && !styleValue)
+            continue;
           if (!styleKey || !styleValue)
             return null;
 
