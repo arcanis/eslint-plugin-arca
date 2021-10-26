@@ -53,6 +53,8 @@ Then configure the rules you want to use under the rules section.
 * [`arca/import-align`](https://github.com/arcanis/eslint-plugin-arca/blob/master/docs/rules/import-align.md) - require `from` keywords to be aligned
 * [`arca/import-ordering`](https://github.com/arcanis/eslint-plugin-arca/blob/master/docs/rules/import-ordering.md) - ensure that each import in the file is correctly ordered relative to the others
 * [`arca/jsx-longhand-props`](https://github.com/arcanis/eslint-plugin-arca/blob/master/docs/rules/jsx-longhand-props.md) - require JSX props to be passed using the longhand syntax
+* [`arca/jsx-no-html-attrs`](https://github.com/arcanis/eslint-plugin-arca/blob/master/docs/rules/jsx-no-html-attrs.md) - autofix HTML attribute names into their React props
+* [`arca/jsx-no-string-styles`](https://github.com/arcanis/eslint-plugin-arca/blob/master/docs/rules/jsx-no-string-styles.md) - autofix string `styles` props into objects
 * [`arca/melted-constructs`](https://github.com/arcanis/eslint-plugin-arca/blob/master/docs/rules/melted-constructs.md) - enforce the use of melted constructs when possible
 * [`arca/newline-after-import-section`](https://github.com/arcanis/eslint-plugin-arca/blob/master/docs/rules/newline-after-var.md) - require an empty newline after an import section
 * [`arca/no-default-export`](https://github.com/arcanis/eslint-plugin-arca/blob/master/docs/rules/no-default-export.md) - disallow default exports

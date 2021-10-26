@@ -11,6 +11,8 @@ import importAlignRule               from './rules/import-align';
 import importOrderingRule            from './rules/import-ordering';
 import importQuotesRule              from './rules/import-quotes';
 import jsxLonghandPropsRule          from './rules/jsx-longhand-props';
+import jsxNoHtmlAttrs                from './rules/jsx-no-html-attrs';
+import jsxNoStringStyles             from './rules/jsx-no-string-styles';
 import meltedConstructsRule          from './rules/melted-constructs';
 import newlineAfterImportSectionRule from './rules/newline-after-import-section';
 import noDefaultExportRule           from './rules/no-default-export';
@@ -22,6 +24,8 @@ export const rules = {
   [`import-ordering`]: importOrderingRule,
   [`import-quotes`]: importQuotesRule,
   [`jsx-longhand-props`]: jsxLonghandPropsRule,
+  [`jsx-no-html-attrs`]: jsxNoHtmlAttrs,
+  [`jsx-no-string-styles`]: jsxNoStringStyles,
   [`melted-constructs`]: meltedConstructsRule,
   [`newline-after-import-section`]: newlineAfterImportSectionRule,
   [`no-default-export`]: noDefaultExportRule,
