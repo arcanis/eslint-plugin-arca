@@ -27,6 +27,9 @@ ruleTester.run(`import-absolutes`, rule, {
     code: `import './';\n`,
     parserOptions,
     options: [{preferRelative: `^\\.\\/[^\\/]*$`}],
+  }, {
+    code: `import 'eslint-plugin-arca-actually-another-package/foo';`,
+    parserOptions,
   }],
   invalid: [{
     code: `import './';\n`,
