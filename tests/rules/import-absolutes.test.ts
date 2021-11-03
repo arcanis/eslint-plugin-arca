@@ -30,6 +30,9 @@ ruleTester.run(`import-absolutes`, rule, {
   }, {
     code: `import 'eslint-plugin-arca-actually-another-package/foo';`,
     parserOptions,
+  }, {
+    code: `import 'eslint-plugin-arca';`,
+    parserOptions,
   }],
   invalid: [{
     code: `import './';\n`,
