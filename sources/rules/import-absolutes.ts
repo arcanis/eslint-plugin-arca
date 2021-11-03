@@ -15,7 +15,7 @@ type ImportInfo = {
   absolutePath: string;
 };
 
-const isAbsolute = (path: string): boolean => !path.match(/^\.{0,2}\//);
+const isAbsolute = (path: string): boolean => !path.match(/^\.{0,2}(\/.*)?$/);
 const isRelative = (path: string): boolean => !isAbsolute(path);
 
 const withEndSep = (input: string) => input.endsWith(path.sep) ? input : `${input}${path.sep}`;

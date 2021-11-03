@@ -35,6 +35,18 @@ ruleTester.run(`import-absolutes`, rule, {
     parserOptions,
   }],
   invalid: [{
+    code: `import '.';\n`,
+    output: `import 'eslint-plugin-arca/tests/rules';\n`,
+    filename: __filename,
+    parserOptions,
+    errors: [{message: `Expected relative import to be package-absolute (rather than '.').`}],
+  }, {
+    code: `import '..';\n`,
+    output: `import 'eslint-plugin-arca/tests';\n`,
+    filename: __filename,
+    parserOptions,
+    errors: [{message: `Expected relative import to be package-absolute (rather than '..').`}],
+  }, {
     code: `import './';\n`,
     output: `import 'eslint-plugin-arca/tests/rules';\n`,
     filename: __filename,
