@@ -91,7 +91,7 @@ const rule: Rule.RuleModule = {
 
     function isPackageImport(importPath: string): boolean {
       return isRelative(importPath) ||
-        importPath.startsWith(packageInfo.name);
+        importPath.startsWith(`${packageInfo.name}/`);
     }
 
     function getImportInfo(importPath: string): ImportInfo | null {
