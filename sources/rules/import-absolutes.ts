@@ -5,10 +5,9 @@
  * See LICENSE file in root directory for full license.
  */
 
-import type {Rule}      from 'eslint';
-import type * as ESTree from 'estree';
-import fs               from 'fs';
-import path             from 'path';
+import type {Rule} from 'eslint';
+import fs          from 'fs';
+import path        from 'path';
 
 type ImportInfo = {
   relativePath: string ;
@@ -90,20 +89,15 @@ const rule: Rule.RuleModule = {
     const packageInfo = packageDir && require(path.join(packageDir, `package.json`)) || {};
 
     function isPackageImport(importPath: string): boolean {
-      return isRelative(importPath) ||
-        importPath.startsWith(`${packageInfo.name}/`);
+      return isRelative(importPath) || importPath.startsWith(`${packageInfo.name}/`);
     }
 
     function getImportInfo(importPath: string): ImportInfo | null {
-      if (
-        !isPackageImport(importPath) ||
-        packageDir === undefined ||
-        packageInfo.name === undefined
-      )
+      if (!isPackageImport(importPath) || packageDir === null || packageInfo.name === null)
         return null;
 
-      const targetPath = isRelative(importPath) ?
-        path.resolve(sourceDirName, importPath)
+      const targetPath = isRelative(importPath)
+        ? path.resolve(sourceDirName, importPath)
         : path.join(packageDir, importPath.slice(packageInfo.name.length));
 
       return {
@@ -178,7 +172,7 @@ const rule: Rule.RuleModule = {
   },
 };
 
-function getPackagePath(startPath: string): string | undefined {
+function getPackagePath(startPath: string) {
   let currentPath = path.resolve(startPath);
   let previousPath;
 
@@ -190,7 +184,7 @@ function getPackagePath(startPath: string): string | undefined {
     currentPath = path.dirname(currentPath);
   }
 
-  return undefined;
+  return null;
 }
 
 // eslint-disable-next-line arca/no-default-export
