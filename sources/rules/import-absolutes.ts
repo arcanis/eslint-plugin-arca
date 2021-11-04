@@ -15,7 +15,7 @@ type ImportInfo = {
   absolutePath: string;
 };
 
-const isAbsolute = (path: string): boolean => !path.match(/^\.{0,2}(\/.*)?$/);
+const isAbsolute = (path: string): boolean => !path.match(/^\.{0,2}(\/|$)/);
 const isRelative = (path: string): boolean => !isAbsolute(path);
 
 const withEndSep = (input: string) => input.endsWith(path.sep) ? input : `${input}${path.sep}`;
@@ -106,9 +106,16 @@ const rule: Rule.RuleModule = {
         path.resolve(sourceDirName, importPath)
         : path.join(packageDir, importPath.slice(packageInfo.name.length));
 
+      let relativePath = path.relative(sourceDirName, targetPath) || `.`;
+
+      if (isAbsolute(relativePath))
+        relativePath = `./${relativePath}`;
+      if (relativePath.match(/(^|\/)\.{0,2}$/))
+        relativePath = `${relativePath}/index`;
+
       return {
         absolutePath: `${packageInfo.name}/${path.relative(packageDir, targetPath)}`,
-        relativePath: `./${path.relative(sourceDirName, targetPath)}` || `.`,
+        relativePath,
       };
     }
 
