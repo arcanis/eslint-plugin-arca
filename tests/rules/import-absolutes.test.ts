@@ -24,10 +24,6 @@ ruleTester.run(`import-absolutes`, rule, {
     parserOptions,
     options: [{preferRelative: `^\\.\\/[^\\/]*$`}],
   }, {
-    code: `import './';\n`,
-    parserOptions,
-    options: [{preferRelative: `^\\.\\/[^\\/]*$`}],
-  }, {
     code: `import 'eslint-plugin-arca-actually-another-package/foo';`,
     parserOptions,
   }, {
@@ -35,11 +31,44 @@ ruleTester.run(`import-absolutes`, rule, {
     parserOptions,
   }],
   invalid: [{
+    code: `import '.';\n`,
+    output: `import 'eslint-plugin-arca/tests/rules';\n`,
+    filename: __filename,
+    parserOptions,
+    errors: [{message: `Expected relative import to be package-absolute (rather than '.').`}],
+  }, {
+    code: `import '..';\n`,
+    output: `import 'eslint-plugin-arca/tests';\n`,
+    filename: __filename,
+    parserOptions,
+    errors: [{message: `Expected relative import to be package-absolute (rather than '..').`}],
+  }, {
+    code: `import 'eslint-plugin-arca/tests/foo';\n`,
+    output: `import '../foo';\n`,
+    filename: __filename,
+    parserOptions,
+    errors: [{message: `Expected absolute import to be relative (rather than 'eslint-plugin-arca/tests/foo').`}],
+    options: [{preferRelative: `foo`}],
+  }, {
     code: `import './';\n`,
     output: `import 'eslint-plugin-arca/tests/rules';\n`,
     filename: __filename,
     parserOptions,
     errors: [{message: `Expected relative import to be package-absolute (rather than './').`}],
+  }, {
+    code: `import './';\n`,
+    output: `import './index';\n`,
+    filename: __filename,
+    parserOptions,
+    errors: [{message: `Expected relative import to be normalized (rather than './').`}],
+    options: [{preferRelative: `^\\.\\/[^\\/]*$`}],
+  }, {
+    code: `import '..';\n`,
+    output: `import '../index';\n`,
+    filename: __filename,
+    parserOptions,
+    errors: [{message: `Expected relative import to be normalized (rather than '..').`}],
+    options: [{preferRelative: `..`}],
   }, {
     code: `import './foo';\n`,
     output: `import 'eslint-plugin-arca/tests/rules/foo';\n`,
