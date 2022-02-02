@@ -10,6 +10,7 @@ import importAbsolutesRule           from './rules/import-absolutes';
 import importAlignRule               from './rules/import-align';
 import importOrderingRule            from './rules/import-ordering';
 import importQuotesRule              from './rules/import-quotes';
+import jsxImportReact                from './rules/jsx-import-react';
 import jsxLonghandPropsRule          from './rules/jsx-longhand-props';
 import jsxNoHtmlAttrs                from './rules/jsx-no-html-attrs';
 import jsxNoStringStyles             from './rules/jsx-no-string-styles';
@@ -23,6 +24,7 @@ export const rules = {
   [`import-align`]: importAlignRule,
   [`import-ordering`]: importOrderingRule,
   [`import-quotes`]: importQuotesRule,
+  [`jsx-import-react`]: jsxImportReact,
   [`jsx-longhand-props`]: jsxLonghandPropsRule,
   [`jsx-no-html-attrs`]: jsxNoHtmlAttrs,
   [`jsx-no-string-styles`]: jsxNoStringStyles,
