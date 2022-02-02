@@ -169,8 +169,8 @@ const rule: Rule.RuleModule = {
 
       const aHasSideEffects = !a.specifiers.length;
       const bHasSideEffects = !b.specifiers.length;
-      const aIsLocal = aSource.startsWith('.');
-      const bIsLocal = bSource.startsWith('.');
+      const aIsLocal = aSource.startsWith(`.`);
+      const bIsLocal = bSource.startsWith(`.`);
 
       if (!aHasSideEffects && bHasSideEffects) {
         if (bIsLocal)
@@ -187,8 +187,9 @@ const rule: Rule.RuleModule = {
       if (aHasSideEffects && bHasSideEffects) {
         if (aIsLocal && !bIsLocal)
           return [1, `local side-effects go last`];
-        if (!aIsLocal && bIsLocal)
+        if (!aIsLocal && bIsLocal) {
           return [-1, `local side-effects go last`];
+        }
       }
 
       const aMultiline = a.loc!.start.line !== a.loc!.end.line;
