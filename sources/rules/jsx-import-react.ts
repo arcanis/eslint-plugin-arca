@@ -19,12 +19,14 @@ const rule: Rule.RuleModule = {
     let isFirstElement = true;
 
     function reportMissingReactImport(node: ESTree.Node) {
+      const sourceCode = context.getSourceCode();
+
       return context.report({
         node,
         message: `Missing React import.`,
 
         fix (fixer) {
-          return fixer.insertTextAfter(context.getScope().block, `\nimport * as React from 'react';`);
+          return fixer.insertTextAfter(sourceCode.ast, `\nimport * as React from 'react';`);
         },
       });
     }
