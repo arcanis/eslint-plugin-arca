@@ -14,10 +14,45 @@ type ImportInfo = {
   absolutePath: string;
 };
 
+let pnp;
+try {
+  pnp = require(`pnpapi`);
+} catch {}
+
 const isAbsolute = (path: string): boolean => !path.match(/^\.{0,2}(\/|$)/);
 const isRelative = (path: string): boolean => !isAbsolute(path);
 
 const withEndSep = (input: string) => input.endsWith(path.sep) ? input : `${input}${path.sep}`;
+
+const getBuiltinReplacementSpecs = () => {
+  const replacementSpecs: Array<{from: string, to: string}> = [];
+
+  if (typeof pnp !== `undefined`) {
+    const rootInfo = pnp.getPackageInformation(pnp.topLevel);
+
+    const workspaces = pnp.getDependencyTreeRoots().map(locator => ({
+      locator,
+      pkg: pnp.getPackageInformation(locator),
+    }));
+
+    const root = workspaces.find(workspace => {
+      return workspace.pkg.packageLocation === rootInfo.packageLocation;
+    });
+
+    for (const workspace of workspaces) {
+      const relative = path.relative(root.pkg.packageLocation, workspace.pkg.packageLocation);
+      if (!relative)
+        continue;
+
+      replacementSpecs.push({
+        from: path.posix.join(root.locator.name, relative.replace(/\\/g, `/`)),
+        to: `${workspace.locator.name}`,
+      });
+    }
+  }
+
+  return replacementSpecs;
+};
 
 const getReplaceAbsolutePathStart = (
   replacementSpecs: Array<{from: string, to: string}>
@@ -26,19 +61,30 @@ const getReplaceAbsolutePathStart = (
     if (!isAbsolute(from) || !isAbsolute(to))
       throw new Error(`'from' specifier must be an absolute path instead of ${from}`);
 
-    const f = withEndSep(from);
+    const sep = from.endsWith(`/`)
+      ? `/`
+      : `/|$`;
+
+    from = from.replace(/\/$/, ``);
+    to = to.replace(/\/$/, ``);
+
     return {
-      from: f,
-      fromRegex: new RegExp(`^${f}`),
-      to: withEndSep(to),
+      from,
+      to,
+      fromRegex: new RegExp(`^${from}(${sep})`),
     };
   });
 
   return path => {
     for (const {from, fromRegex, to} of validatedSpec) {
-      const candidate = path.replace(fromRegex, to);
-      if (candidate !== path) {
+      const candidate = path.replace(fromRegex, `${to}$1`);
+      if (candidate === path)
+        continue;
+
+      if (candidate === to) {
         return {adjustedPath: candidate, from, to};
+      } else {
+        return {adjustedPath: candidate, from: `${from}/`, to: `${to}/`};
       }
     }
 
@@ -81,7 +127,10 @@ const rule: Rule.RuleModule = {
     const preferRelativeRegex = options.preferRelative ? new RegExp(options.preferRelative) : undefined;
     const preferRelative = preferRelativeRegex ? (path: string) => preferRelativeRegex.test(path) : () => false;
 
-    const replaceAbsolutePathStart = getReplaceAbsolutePathStart(options.replaceAbsolutePathStart || []);
+    const replaceAbsolutePathStart = getReplaceAbsolutePathStart([
+      ...getBuiltinReplacementSpecs(),
+      ...options.replaceAbsolutePathStart ?? [],
+    ]);
 
     const sourceDirName = withEndSep(path.dirname(context.getFilename()));
 
@@ -112,7 +161,6 @@ const rule: Rule.RuleModule = {
         relativePath,
       };
     }
-
 
     return {
       ImportDeclaration (node) {
@@ -156,10 +204,17 @@ const rule: Rule.RuleModule = {
             );
           } else if (adjustedAbsolutePath !== null) {
             const {adjustedPath, from, to} = adjustedAbsolutePath;
-            report(
-              `Expected absolute import to start with '${to}' prefix (rather than '${from}').`,
-              adjustedPath
-            );
+            if (from.endsWith(`/`)) {
+              report(
+                `Expected absolute import to start with '${to}' prefix (rather than '${from}').`,
+                adjustedPath
+              );
+            } else {
+              report(
+                `Expected absolute import to be '${to}' (rather than '${from}').`,
+                adjustedPath
+              );
+            }
           }
         } else {
           if (!preferRelativeImport) {

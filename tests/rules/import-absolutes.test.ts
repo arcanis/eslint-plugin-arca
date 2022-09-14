@@ -56,6 +56,18 @@ ruleTester.run(`import-absolutes`, rule, {
     parserOptions,
     errors: [{message: `Expected relative import to be package-absolute (rather than './').`}],
   }, {
+    code: `import 'eslint-plugin-arca/tests/workspace/lib';\n`,
+    output: `import 'eslint-plugin-arca-test-workspace/lib';\n`,
+    filename: __filename,
+    parserOptions,
+    errors: [{message: `Expected absolute import to start with 'eslint-plugin-arca-test-workspace/' prefix (rather than 'eslint-plugin-arca/tests/workspace/').`}]
+  }, {
+    code: `import 'eslint-plugin-arca/tests/workspace';\n`,
+    output: `import 'eslint-plugin-arca-test-workspace';\n`,
+    filename: __filename,
+    parserOptions,
+    errors: [{message: `Expected absolute import to be 'eslint-plugin-arca-test-workspace' (rather than 'eslint-plugin-arca/tests/workspace').`}]
+  }, {
     code: `import './';\n`,
     output: `import './index';\n`,
     filename: __filename,
