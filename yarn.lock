@@ -1044,6 +1044,12 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eslint-plugin-arca-test-workspace@workspace:tests/workspace":
+  version: 0.0.0-use.local
+  resolution: "eslint-plugin-arca-test-workspace@workspace:tests/workspace"
+  languageName: unknown
+  linkType: soft
+
 "eslint-plugin-arca@link:./::locator=eslint-plugin-arca%40workspace%3A.":
   version: 0.0.0-use.local
   resolution: "eslint-plugin-arca@link:./::locator=eslint-plugin-arca%40workspace%3A."

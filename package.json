@@ -7,6 +7,9 @@
     "eslintplugin",
     "eslint-plugin"
   ],
+  "workspaces": [
+    "tests/workspace"
+  ],
   "author": "Maël Nison",
   "main": "sources/index.ts",
   "scripts": {
