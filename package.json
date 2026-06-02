@@ -10,6 +10,10 @@
   "workspaces": [
     "tests/workspace"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arcanis/eslint-plugin-arca.git"
+  },
   "author": "Maël Nison",
   "main": "sources/index.ts",
   "scripts": {
